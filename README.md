@@ -12,6 +12,7 @@ a space for what learned today.
 - [함수](C++/%ED%95%A8%EC%88%98.md)
 - [포인터](C++/%ED%8F%AC%EC%9D%B8%ED%84%B0.md)
 - [포인터 활용](C++/%ED%8F%AC%EC%9D%B8%ED%84%B0-%ED%99%9C%EC%9A%A9.md)
+- [동적 메모리 관리](C++/%EB%8F%99%EC%A0%81-%EB%A9%94%EB%AA%A8%EB%A6%AC-%EA%B4%80%EB%A6%AC.md)
 
 ## etc
 - [컴퓨터 개론](etc/%EC%BB%B4%ED%93%A8%ED%84%B0-%EA%B0%9C%EB%A1%A0.md)
