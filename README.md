@@ -16,4 +16,4 @@ a space for what learned today.
 - [오류](C++/%EC%98%A4%EB%A5%98.md)
 
 ## etc
-- [컴퓨터 개론](etc/%EC%BB%B4%ED%93%A8%ED%84%B0-%EA%B0%9C%EB%A1%A0.md)
+- [CS 지식](etc/CS-%EC%A7%80%EC%8B%9D.md)
