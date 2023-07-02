@@ -11,6 +11,7 @@ a space for what learned today.
   - [프로그램: 두 수의 최대공약수와 최소공배수](C++/%EB%91%90-%EC%88%98%EC%9D%98-%EC%B5%9C%EB%8C%80%EA%B3%B5%EC%95%BD%EC%88%98%EC%99%80-%EC%B5%9C%EC%86%8C%EA%B3%B5%EB%B0%B0%EC%88%98.cpp)
 - [복잡한 형식들](C++/%EB%B3%B5%EC%9E%A1%ED%95%9C-%ED%98%95%EC%8B%9D%EB%93%A4.md)
 - [배열](C++/%EB%B0%B0%EC%97%B4.md)
+  - [프로그램: 인덱스와 행렬의 관계](C++/%EC%9D%B8%EB%8D%B1%EC%8A%A4%EC%99%80-%ED%96%89%EB%A0%AC%EC%9D%98-%EA%B4%80%EA%B3%84.cpp)
 - [함수](C++/%ED%95%A8%EC%88%98.md)
 - [포인터](C++/%ED%8F%AC%EC%9D%B8%ED%84%B0.md)
 - [포인터 활용](C++/%ED%8F%AC%EC%9D%B8%ED%84%B0-%ED%99%9C%EC%9A%A9.md)
