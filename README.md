@@ -7,6 +7,7 @@ a space for what learned today.
 - [리터럴과 연산자](C++/%EB%A6%AC%ED%84%B0%EB%9F%B4%EA%B3%BC-%EC%97%B0%EC%82%B0%EC%9E%90.md)
   - [프로그램: RGB 색상 추출](C++/RGB-%EC%83%89%EC%83%81-%EC%B6%94%EC%B6%9C.cpp)
 - [구문과 흐름제어](C++/%EA%B5%AC%EB%AC%B8%EA%B3%BC-%ED%9D%90%EB%A6%84%EC%A0%9C%EC%96%B4.md)
+  - [프로그램: 소수 출력](C++/%EC%86%8C%EC%88%98%20%EC%B6%9C%EB%A0%A5.cpp)
 - [복잡한 형식들](C++/%EB%B3%B5%EC%9E%A1%ED%95%9C-%ED%98%95%EC%8B%9D%EB%93%A4.md)
 - [배열](C++/%EB%B0%B0%EC%97%B4.md)
 - [함수](C++/%ED%95%A8%EC%88%98.md)
