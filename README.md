@@ -17,6 +17,7 @@ a space for what learned today.
   - [프로그램: 문자열 대문자로 변경](C++/%EB%AC%B8%EC%9E%90%EC%97%B4-%EB%8C%80%EB%AC%B8%EC%9E%90%EB%A1%9C-%EB%B3%80%EA%B2%BD.cpp)
   - [프로그램: 파스칼의 삼각형](C++/%ED%8C%8C%EC%8A%A4%EC%B9%BC%EC%9D%98-%EC%82%BC%EA%B0%81%ED%98%95.cpp)
   - [프로그램: 달팽이 배열](C++/%EB%8B%AC%ED%8C%BD%EC%9D%B4-%EB%B0%B0%EC%97%B4.cpp)
+  - [프로그램: 마방진](C++/%EB%A7%88%EB%B0%A9%EC%A7%84.cpp)
 - [함수](C++/%ED%95%A8%EC%88%98.md)
 - [포인터](C++/%ED%8F%AC%EC%9D%B8%ED%84%B0.md)
 - [포인터 활용](C++/%ED%8F%AC%EC%9D%B8%ED%84%B0-%ED%99%9C%EC%9A%A9.md)
