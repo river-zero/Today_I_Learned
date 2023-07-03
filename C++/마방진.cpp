@@ -1,4 +1,4 @@
- #include <iostream>
+#include <iostream>
 
 int main() {
     const int nums{ 5 };
