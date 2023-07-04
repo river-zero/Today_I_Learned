@@ -27,6 +27,7 @@ a space for what learned today.
 - [포인터 활용](C++/%ED%8F%AC%EC%9D%B8%ED%84%B0-%ED%99%9C%EC%9A%A9.md)
 - [동적 메모리 관리](C++/%EB%8F%99%EC%A0%81-%EB%A9%94%EB%AA%A8%EB%A6%AC-%EA%B4%80%EB%A6%AC.md)
   - [프로그램: 학생 정보 관리](C++/%ED%95%99%EC%83%9D-%EC%A0%95%EB%B3%B4-%EA%B4%80%EB%A6%AC.cpp)
+  - [프로그램: 창고지기 게임](C++/%EC%B0%BD%EA%B3%A0%EC%A7%80%EA%B8%B0-%EA%B2%8C%EC%9E%84.cpp)
 - [오류](C++/%EC%98%A4%EB%A5%98.md)
 
 ## etc
