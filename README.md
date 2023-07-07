@@ -34,6 +34,7 @@ a space for what learned today.
 - [기초](알고리즘/%EA%B8%B0%EC%B4%88.md)
 - [정렬 알고리즘](알고리즘/%EC%A0%95%EB%A0%AC-%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98.md)
   - [프로그램: 순차 정렬](알고리즘/%EC%88%9C%EC%B0%A8-%EC%A0%95%EB%A0%AC.cpp)
+  - [프로그램: 선택 정렬](알고리즘/%EC%84%A0%ED%83%9D-%EC%A0%95%EB%A0%AC.cpp)
 
 ## etc
 - [CS 지식](etc/CS-%EC%A7%80%EC%8B%9D.md)
