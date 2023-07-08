@@ -38,6 +38,7 @@ a space for what learned today.
   - [프로그램: 버블 정렬](알고리즘/%EB%B2%84%EB%B8%94-%EC%A0%95%EB%A0%AC.cpp)
   - [프로그램: 삽입 정렬](알고리즘/%EC%82%BD%EC%9E%85-%EC%A0%95%EB%A0%AC.cpp)
   - [프로그램: 병합 정렬](알고리즘/병합-정렬.cpp)
+  - [프로그램: 퀵 정렬](알고리즘/퀵-정렬.cpp)
 
 ## etc
 - [CS 지식](etc/CS-%EC%A7%80%EC%8B%9D.md)
