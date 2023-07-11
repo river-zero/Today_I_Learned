@@ -42,6 +42,7 @@ a space for what learned today.
 
 ## 자료구조
 - [기초](자료구조/기초.md)
+- [선형 자료구조](자료구조/선형-자료구조.md)
 
 ## etc
 - [CS 지식](etc/CS-%EC%A7%80%EC%8B%9D.md)
