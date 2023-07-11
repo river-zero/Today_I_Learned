@@ -40,5 +40,8 @@ a space for what learned today.
   - [프로그램: 병합 정렬](알고리즘/병합-정렬.cpp)
   - [프로그램: 퀵 정렬](알고리즘/퀵-정렬.cpp)
 
+## 자료구조
+- [기초](자료구조/기초.md)
+
 ## etc
 - [CS 지식](etc/CS-%EC%A7%80%EC%8B%9D.md)
