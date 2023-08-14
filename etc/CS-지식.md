@@ -6,6 +6,7 @@
 - [정적 라이브러리와 동적 라이브러리](#정적-라이브러리와-동적-라이브러리)
 - [POD(Plain Old Data)](#podplain-old-data)
 - [무명 객체(Anonymous Object)](#무명-객체anonymous-object)
+- [Relationship](#relationship)
 
 # 컴퓨터 기초
 컴퓨터는 껐다 키는 스위치에서 출발한다. 컴퓨터가 0과 1로 이루어졌다고 하는 이유도 여기에 있다.
@@ -121,3 +122,70 @@ int main() {
 ```
 
 조금 더 효율적인 프로그램을 만들기 위해 Square 함수에 매개변수를 참조형인 `MyClass& c`로 받는다면 오류가 발생한다. 무명객체는 rvalue이기 때문에 당연히 참조형을 사용할 수 없다. 따라서 `const MyClass& c`로 사용하면 오류가 발생하지 않는다.
+
+# Relationship
+|    용어    |                        개념                        |
+| :--------: | :------------------------------------------------: |
+| is-part-of |                 Composition(결합)                  |
+|   has-a    |                Aggregation(집단화)                 |
+|   use-a    |                Association(연관화)                 |
+|    is-a    | Generalization(일반화) 또는 Specialication(특수화) |
+
+A is-part-of B 관계는 예를 들면 엔진 is-part-of 자동차라고 할 수 있다.
+- A는 B의 일부 구성 요소이다.
+- A는 한 번에 하나의 객체에만 존재한다.
+- A는 B에 의해 관리된다.
+- A는 B의 존재를 알지 못한다.
+
+```
+class Status {
+public:
+    int mHP;
+    int mMP;
+};
+
+class Player {
+    Status mStatus;
+};
+```
+
+위 코드에서 A는 Status에 해당하고 B는 Player에 해당함을 알 수 있다.
+
+A has-a B 관계는 예를 들면 자동차 has-a 타이어라고 할 수 있다.
+- B는 A의 일부 구성 요소이다.
+- B는 한 번에 여러 오브젝트에 소속된다.
+- B는 A에 의해 관리되지 않는다.
+- B는 A의 존재를 알지 못한다.
+
+```
+class Player {
+};
+
+class Auction {
+    Player* mPlayers;
+};
+```
+
+위 코드에서 A는 Auction에 해당하고 B는 Player에 해당한다.
+
+A use-a B 관계는 예를 들면 운전자 use-a 자동차라고 할 수 있다.
+- B는 A와 관련이 없다.
+- B는 한 번에 여러 오브젝트에 소속된다.
+- B가 A에 의해 관리되지 않는다. 
+- B는 A의 존재를 알 수도 있고 모를 수도 있다.
+
+```
+class Potion {
+public:
+    int mCount;
+    int mRecovery;
+};
+
+class Player {
+    Potion* pPotion;
+};
+```
+
+위 코드에서 A는 Plyaer에 해당하고 B는 Potion에 해당한다.
+
+A is-a B 관계는 예를 들면 경찰차 is-a 자동차라고 할 수 있다. 핵심은 공통된 개념을 묶어서 일반화하는 것과 여기서 추가 정보를 포함하여 객체를 생성하는 특수화이다. 그러니까 파생, 다른 말로는 상속을 말한다. 
