@@ -356,8 +356,23 @@ int main() {
 
 # C++11 언어 - 타입
 ## enum class
+enum의 완벽한 상위호환이다. 이름 충돌과 형변환 관련 문제를 예방하면서 타입 안전성을 높일 수 있다.
+
+```
+enum class Color {
+    red, 
+    blue
+};
+
+enum class TrafficLight : char { // char로 한정하여 공간 절약
+    red,
+    yellow,
+    green
+};
+```
 
 ## long long
+최소 64비트를 보장하는 타입이 추가되었다. `LL` 접미사를 사용한다.
 
 # C++11 언어 - 기타
 ## 반환형 접미사
