@@ -204,7 +204,7 @@ int main() {
 #include <iostream>
 
 template<typename T1, typename T2>
-auto add(T1 a, T2 b) -> decltype(a + b) {
+auto Add(T1 a, T2 b) -> decltype(a + b) {
     return a + b;
 }
 
@@ -376,49 +376,370 @@ enum class TrafficLight : char { // char로 한정하여 공간 절약
 
 # C++11 언어 - 기타
 ## 반환형 접미사
+우선 반환형을 auto로 지정하고 매개변수 이후로 미루는 방식이다.
+
+```
+template<typename T1, typename T2>
+auto Add(T1 a, T2 b) -> decltype(a + b) {
+    return a + b;
+}
+```
 
 ## 원시 문자열 리터럴
+이스케이프 시퀀스를 해석하지 않고 문자열 그대로의 형태로 사용할 수 있다.
+
+```
+#include <iostream>
+
+int main() {
+    std::string file = "C:\\MyDocument\\Hello\\World"; 
+    // 일반 문자열 리터럴
+
+    std::string str1 = R"(C:\MyDocume
+nt\Hell	o\World)"; 
+    // 원시 문자열 리터럴
+
+    std::cout << str1 << std::endl;
+}
+```
 
 ## std::static_assert
+기존의 assert는 주로 런타임에 프로그램의 논리적인 조건을 체크하고 조건이 거짓인 경우 프로그램을 종료하였다. 반면에 std::static_assert는 컴파일 타임에 조건을 검사하여 조건이 거짓이면 컴파일러가 해당 위치에서 컴파일을 중단하고 에러 메시지를 출력한다. 이는 프로그램이 컴파일되는 동안에 발생할 수 있는 오류를 미리 방지하는데 사용한다. 이때 조건은 상수 표현식이다.
 
 ## 메모리 정렬
+객체 안의 변수들이 메모리에서 어떻게 배치되는지를 지정하는 방법이다. 이를 통해 변수들이 메모리 상에서 특정 크기의 배수로 정렬되도록 할 수 있다.
+
+메모리 정렬은 성능과 이식성 측면에서 중요한 역할을 한다. 데이터는 정렬된 주소에서 더 빨리 접근할 수 있고 데이터가 정렬되어야 최적화된 계산이 가능하기 때문이다.
+
+alignas 키워드를 사용해 메모리 정렬을 지정할 수 있다. 아래 예시에서 실제로 myInt가 차지하는 크기가 4바이트라 하더라도 16바이트로 지정되어 해당 크기만큼의 메모리 공간을 차지하게 된다.
+
+```
+struct alignas(16) MyStruct {
+    int myInt;
+};
+```
 
 # C++11 언어 - 템플릿
 ## 가변 인자 템플릿
+템플릿 인자를 가변형으로 받는 것이다.
+
+```
+#include <iostream>
+
+template<typename T> // base case
+T Sum(T first) {
+    return first;
+}
+
+template<typename T, typename ... Args>
+T Sum(T first, Args... args) {
+    return first + Sum(args...);
+}
+
+using namespace std::string_literals;
+
+int main() {
+    std::cout << Sum(1, 2, 3) << std::endl;          // 출력: 6
+    std::cout << Sum(1) << std::endl;                // 출력: 1
+    std::cout << Sum(1, 2, 3, 4, 5) << std::endl;    // 출력: 15
+    std::cout << Sum("a"s, "b"s, "c"s) << std::endl; // 출력: "abc"
+}
+```
+
+C++17에서 추가된 fold expression을 활용한다면 아래와 같이 구현된다.
+
+```
+#include <iostream>
+
+template<typename T, typename ... Args>
+T Sum(T first, Args...) {
+    return (first + ...);
+}
+
+using namespace std::string_literals;
+
+int main() {
+    std::cout << Sum(1, 2, 3) << std::endl;        
+    std::cout << Sum(1) << std::endl;              
+    std::cout << Sum(1, 2, 3, 4, 5) << std::endl;
+    std::cout << Sum("a"s, "b"s, "c"s) << std::endl;
+}
+```
+
+아래 코드에서 템플릿 함수인 Make는 다양한 타입과 개수의 인자를 받아 해당 타입의 객체를 동적으로 생성하고 초기화하는 포인터를 반환한다. 이와 같은 가변 인자 템플릿과 perfect forwarding을 활용한 코드는 여러 개의 다양한 타입을 다루거나 유연한 팩토리 함수를 구현할 때 유용하게 사용된다. 
+
+여기서 팩토리 함수란 객체 생성과 초기화를 추상화하여 객체를 생성하는데 필요한 복잡한 과정을 알 필요 없이 쉽게 사용할 수 있도록 해주는 함수를 말한다.
+
+```
+template<class T, class... Types>
+T* Make(Types&& ... args)
+{
+    return new T(std::forward<Types>(args)...);
+}
+```
 
 ## extern 템플릿
+템플릿은 인스턴스화 될 때마다 코드가 생성되는 방식이다. 여러 소스 파일에서 해당 템플릿 함수를 사용하면 매번 코드를 생성하므로 중복으로 생성/컴파일된다. 이러한 중복을 피하기 위해 extern 템플릿을 사용한다.
+
+```
+template <typename T>
+void MyFunction() {
+    // 수백 줄 코드
+}
+
+extern template void MyFunction<int>();
+
+void Func2() {
+    MyFunction<int>(); // 다른 파일에서 생성한 인스턴스 사용
+}
+```
 
 ## 템플릿 별명
+using을 통해 템플릿 별명을 지정할 수 있다.
+
+```
+template <class T>
+using Vector = std::vector<T>; // std::vector를 Vector로 별칭 지정
+
+int main() {
+    Vector<int> vector{ 1,2,3 }; 
+}
+```
 
 ## 지역 타입 템플릿 인자
+이전에는 템플릿 인자로 전역으로 선언된 타입만 사용할 수 있었다. 지역 타입 템플릿 인자를 통해 특정 함수나 클래스 내에서만 사용되는 지역 객체를 템플릿 인자로 사용할 수 있게 되었다.
+
+```
+{
+    struct Less {
+        bool operator()(const X& a, const X& b) {
+            return true;
+        }
+    };
+
+    sort(v.begin(), v.end(), Less());
+}
+```
 
 ## > 표기 개선
+`>>` 시프트 연산자와의 구분을 하지 못해 제한적이었던 사용이 해결되었다.
+
+```
+std::list<std::list<int> > list;  // 이중 시프트 사용
+std::list<std::list<int>> list2;  // C++11에서 도입된 구문
+```
 
 # C++11 STL 일반
 ## std::unique_ptr
+스마트 포인터라는 개념이 도입되었다. 포인터를 생성하고 아무런 관리를 해주지 않아도 컴파일러가 자동적으로 해제한다는 것이 핵심이다.
+
+std::unique_ptr은 1:1 관계를 가지는 스마트 포인터다.
+
+- 포인터를 저장하고 있는 객체를 소유한다.
+- 소유권 문제를 방지하기 위해 복사 생성자, 복사 배정은 지원하지 않는다. 이동 생성자, 이동 배정은 가능하다.
+- 다음과 같이 구성된다.
+  - 포인터 : 생성자를 통해 포인터 지정이 가능하다. 다음 멤버 함수로 접근이 가능하다.
+    - unique_ptr::reset() : 새로운 포인터를 지정한다.
+    - unique_ptr::get() : 현재 포인터를 반환한다.
+    - unique_ptr::release() : 현재 포인터를 해제한다.
+  - 제거자 : 객체가 소멸될 때 처리하는 방식을 관리하기 위한 deleter를 지정할 수 있다.
+
+```
+int main() {
+    std::unique_ptr<int> p{ new int };
+    std::unique_ptr<int> p2{ std::make_unique<int>() }; // C++14
+
+    *p = 1;
+    std::cout << *p << std::endl;
+} // p는 자동 해제
+```
+
+```
+class MySong {
+public:
+    int mTackNo;
+    std::string mName;
+    MySong(int no, std::string name) : mTackNo{ no }, mName{ name }  {}
+};
+
+int main() {
+    std::unique_ptr<MySong> spSong = std::make_unique<MySong>(1, "BattleBGM");
+
+    // 포인터에 접근
+    std::cout << spSong->mTackNo << " : " << spSong->mName << std::endl;
+
+    // unique_ptr 객체의 멤버 함수에 접근
+    spSong.release(); // delete p;
+    spSong.reset();   // delete p; p = nullptr;
+
+    MySong* ptr = spSong.get(); 
+    // ptr은 일반 포인터
+    // get()을 사용한 명시적 변환을 권장
+}
+```
 
 ## std::shared_ptr
+1:n 관계를 가지는 스마트 포인터다. 내부에 참조 카운트라는 것이 존재하여 사용될 때마다 카운트가 증가하고 파괴될 때마다 카운트가 감소한다. 카운트가 0이 되면 메모리를 해제한다.
+
+```
+class Image {};
+
+class Demon {
+    int mHealth;
+    int mAttack;
+    std::shared_ptr<Image> mspImage;
+
+public:
+    Demon(int h, int a, std::shared_ptr<Image> spImage) : mHealth(h), mAttack(a), mspImage(spImage) {}
+};
+
+int main() {
+    std::shared_ptr<Image> spImage = std::make_shared<Image>();
+    // mspImage : 1
+    {
+        std::unique_ptr<Demon> spDemon = std::make_unique<Demon>(100, 10, spImage);
+        // mspImage : 2
+        {
+            std::unique_ptr<Demon> spDemon2 = std::make_unique<Demon>(100, 10, spImage);
+            // mspImage : 3
+        }
+        // mspImage : 2
+    }
+    // mspImage : 1
+}
+```
 
 ## std::weak_ptr
+소유권을 가지지 않는 스마트 포인터다. shared_ptr을 가르키는 용도로 추가되었다. 가장 큰 특징은 shared_ptr의 참조 카운트를 증가시키지 않으면서 해당 포인터가 여전히 유효한지 추적할 수 있다는 것이다. 몬스터 파티와 같이 관리용이 아닌 단순 참고용에 유용하다.
 
 ## std::tuple
+std::pair의 조금 더 일반화된 버전이다. 
+
+```
+#include <iostream>
+#include <tuple>
+
+int main() {
+    std::tuple<int, std::string, std::string> song;
+
+    song = std::make_tuple(1, "helloween", "Dr.Stein"); 
+
+    std::cout << "TrackNO : " << std::get<0>(song) << std::endl; 
+    std::cout << "Artist : " << std::get<1>(song) << std::endl; 
+    std::cout << "Title : " << std::get<2>(song) << std::endl;
+}
+```
+
+C++17에서 추가된 구조 분해 선언을 사용해 아래와 같이 구현이 가능하다.
+
+```
+#include <iostream>
+#include <tuple>
+
+int main() {
+    std::tuple<int, double, std::string> myTuple(42, 3.14, "Hello");
+
+    auto [value1, value2, value3] = myTuple;
+
+    std::cout << value1 << std::endl;
+    std::cout << value2 << std::endl;
+    std::cout << value3 << std::endl;
+}
+```
 
 ## std::function과 std::bind
+std::function은 호출 가능한 객체를 저장하고 호출하는데 사용한다. 호출 가능한 객체에는 함수 포인터, 함수 객체, 람다식 등이 포함될 수 있다. 이를 통해 서로 다른 타입의 호출 가능한 객체들을 하나의 일관된 방식으로 다룰 수 있다. 함수 포인터에 비해 사용이 편리하다.
+
+```
+#include <iostream>
+#include <functinal>
+
+void MyFunction(const int arg1) {}
+
+struct MyStruct {
+    void operator()() {}
+};
+
+int main() {
+    // 함수
+    std::function<void(const int)> functor1 = MyFunction; 
+    functor1(42);
+
+    // 구조체 연산자
+    std::function<void()> functor2 = MyStruct(); 
+    functor2();
+    
+    // 람다식
+    std::function<void()> functor3 = []() {};
+    functor3();
+}
+```
+
+std::bind는 함수 호출을 좀 더 유연하게 다루기 위한 도구다. 인자를 부분적으로 고정하거나 원하는 순서로 조작할 수 있도록 한다.
+
+```
+#include <iostream>
+#include <functional>
+
+void F(int arg1, char arg2) {
+    std::cout << arg1 << ", " << arg2 << std::endl;
+}
+
+using namespace std::placeholders;
+
+int main() {
+    auto functor1 = std::bind(F, _1, _2); // 매개변수 2개를 받도록 바인딩
+    functor1(1, 'a');
+
+    auto functor2 = std::bind(F, _2, _1); // 매개변수들의 순서를 뒤집음
+    functor2('a', 1);
+
+    auto functor3 = std::bind(F, 10, _1); // 첫 번째 인자 10으로 고정
+    functor3('a');
+}
+```
 
 ## 정규표현식
+특정한 문자 패턴을 표현하기 위해 사용되는 문자열이다. 텍스트에서 원하는 부분을 찾거나 대체하는 등의 작업에 유용하다. 정규표현식은 다양한 프로그래밍 언어와 텍스트 편집기에서 지원되며 문자열 처리 작업을 간단하게 만들어준다. 퇴근을 빨라지게 할 수 있는 고마운 친구다.
+
+```
+#include <iostream>
+#include <regex>
+
+int main() {
+    std::cout << "이메일 : ";
+    std::string email;
+    std::cin >> email;
+
+    //std::regex pattern("(\\w+[\\w\\.]*)@(\\w+[\\w\\.]*)\\.([A-Za-z]+)");
+    std::regex pattern(R"((\w+[\w\.]*)@(\w+[\w\.]*)\.([A-Za-z]+))");
+
+    if (std::regex_match(email, pattern)) {
+        std::cout << "올바른 이메일 주소" << std::endl;
+    } else {
+        std::cout << "잘못된 이메일 주소" << std::endl;
+    }
+}
+```
 
 ## 타입 특성
+주어진 타입에 대한 정보를 컴파일 타임에 알려준다. 프로그램이 실행 중일 때가 아닌 컴파일 과정에서 객체의 특성과 속성을 파악할 수 있게 해준다. `<type_traits>` 헤더에 정의된 is_array, is_class, is_base_of 등 다양한 함수들을 활용해 타입 관련 작업을 보다 쉽게 처리할 수 있다.
 
 ## 시간 유틸리티
+정밀한 시간을 다룰 수 있는 도구들을 제공하는 기능이다. 프로그램 실행 시간 측정, 시간 간격 계산, 시간 표시 등의 작업에서 활용될 수 있다.
 
 ## 난수 생성
+컴퓨터는 기본적으로 미리 정해진 규칙을 따라 작동하기 때문에 실제로 무작위한 것을 만들어내기는 어렵다. 난수 생성은 마치 무작위인 것처럼 보이는 숫자들의 시퀀스를 생성한다. 이를 통해 프로그램은 다양한 상황에서 예측 불가능한 값들을 사용할 수 있다.
 
 # C++11 STL 컨테이너 및 알고리즘
 ## std::array
+일반 배열과 동일한 컨테이너가 추가되었다.
 
 ## std::forward_list
+단일 연결 리스트가 추가되었다.
 
 ## unordered_ 계열 컨테이너
+map, set에서 정렬이 빠진 unordered_map, unordered_set이 추가되었다.
 
 # C++11 STL 동시성
 ## std::thread
