@@ -51,7 +51,7 @@
   - [unordered\_ 계열 컨테이너](#unordered_-계열-컨테이너)
 - [C++11 STL 동시성](#c11-stl-동시성)
   - [std::thread](#stdthread)
-  - [상호 배제](#상호-배제)
+  - [std::mutex](#stdmutex)
   - [std::lock](#stdlock)
   - [std::async](#stdasync)
 
@@ -743,9 +743,162 @@ map, set에서 정렬이 빠진 unordered_map, unordered_set이 추가되었다.
 
 # C++11 STL 동시성
 ## std::thread
+멀티 스레딩을 구현하는데 사용한다. 프로그램 내에서 여러 개의 실행 흐름을 만들어 동시에 작업을 수행하는 병렬 처리가 가능해져 프로그램의 성능을 향상시킬 수 있다. 생성한 스레드 객체는 멤버 함수 join()을 사용해 실행한다. join() 함수는 해당 스레드의 실행이 종료되어야 반환된다.
 
-## 상호 배제
+```
+#include <iostream>
+#include <thread>
+
+void PlayMovie() {
+    for (int i = 0; i < 500; i++) {
+        std::cout << "PlayMovie : " << i << std::endl;
+    }
+}
+
+void Download() {
+    for (int repeat = 0; repeat < 10; repeat++) {
+        std::cout << "Download : " << i << std::endl;
+    }
+}
+
+int main() {
+    std::thread job1(PlayMovie);
+	std::thread job2(Download);
+
+    job1.join();
+	job2.join();
+
+    std::cout << "모든 작업 종료" << std::endl;
+}
+```
+
+## std::mutex
+상호 배제를 통해 한 번에 하나의 스레드만 특정 코드 블록이나 자원에 접근할 수 있도록 보장한다.
+
+```
+#include <iostream>
+#include <thread>
+#include <mutex> 
+
+std::mutex gMutex;
+
+void PlayMovie() {
+    for (int i = 0; i < 500; i++) {
+        gMutex.lock();
+        std::cout << "PlayMovie : " << i << std::endl;
+        gMutex.unlock();
+    }
+}
+
+void Download() {
+    for (int repeat = 0; repeat < 10; repeat++) {
+        gMutex.lock();
+        std::cout << "Download : " << i << std::endl;
+        gMutex.unlock();
+    }
+}
+
+int main() {
+    std::thread job1(PlayMovie);
+	std::thread job2(Download);
+
+    job1.join();
+	job2.join();
+
+    std::cout << "모든 작업 종료" << std::endl;
+}
+```
+
+임계구역에 들어가기 전에 lock()을 동시에 호출해버리면 이 또한 교착상태에 빠져버리게 된다. 이때 잠금을 시도하는 기능인 try_lock() 멤버 함수를 사용한다.
+
+```
+#include <iostream>
+#include <thread>
+#include <mutex> 
+
+std::mutex gMutex;
+
+void PlayMovie() {
+    int i = 0;
+    while (i < 500) {
+        if (gMutex.try_lock()) {
+            std::cout << "PlayMovie : " << i << std::endl;
+            i++;
+            gMutex.unlock();
+        } else {
+            // 대기
+        }
+    }
+}
+
+void Download() {
+    int repeat = 0;
+    while (i < 10) {
+        if (gMutex.try_lock()) {
+            std::cout << "Download : " << i << std::endl;
+            i++;
+            gMutex.unlock();
+        } else {
+            // 대기
+        }
+    }
+}
+
+int main() {
+    std::thread job1(PlayMovie);
+	std::thread job2(Download);
+
+    job1.join();
+	job2.join();
+
+    std::cout << "모든 작업 종료" << std::endl;
+}
+```
 
 ## std::lock
+`std::lock(gMutex1, gMutex2);`와 같이 여러 개의 뮤텍스 객체를 동시에 잠그는데 사용한다. 여러 개의 뮤텍스를 안전하게 잠그는 과정에서 데드락을 파할 수 있도록 한다.
+
+```
+if (std::try_lock(gMutex1, gMutex2) == -1) {
+    // 작업
+} else {
+    // 대기
+}
+```
 
 ## std::async
+일반적인 함수는 호출되고 반환값을 돌려줄때까지 호출자에게 돌아가지 않는다. 반면에 비동기(Asynchronous) 함수는 호출되자마자 호출자에게 권한을 넘겨줘서 다른 함수를 호출할 수 있게 한다. 따라서 main()은 main()대로, f()는 f()대로 진행할 수 있게 된다.
+
+```
+#include <iostream>
+#include <future>
+
+void PlayMovie() {
+    for (int i = 0; i < 1000; i++) {
+        std::cout << "PlayMovie : " << i << std::endl;
+    }
+}
+
+void Download() {
+    for (int repeat = 0; repeat < 10; repeat++) {
+        for (char i = 33; i < 125; i++) {
+            std::cout << "Download : " << i << std::endl;
+        }
+    }
+}
+
+int main() {
+    std::future<void> job1 = std::async(PlayMovie);
+    std::future<void> job2 = std::async(Download);
+    // void가 언젠가는 올 것임을 명시
+
+    std::cout << "여기는 메인입니다." << std::endl;
+
+    job1.get();
+    std::cout << "PlayMovie 종료" << std::endl;
+    // 작업이 끝날 때까지 기다린 후 메시지 출력
+
+    job2.get();
+    std::cout << "Download 종료" << std::endl;
+}
+```
