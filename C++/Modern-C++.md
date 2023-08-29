@@ -78,6 +78,16 @@
   - [std::byte](#stdbyte)
   - [std::gcd, std::lcm](#stdgcd-stdlcm)
   - [std::clamp](#stdclamp)
+- [C++20 언어 - 신규 기능](#c20-언어---신규-기능)
+  - [designated initialzers](#designated-initialzers)
+  - [template lambda expression](#template-lambda-expression)
+  - [Three-way Comparison Operator](#three-way-comparison-operator)
+  - [Initializers in range-for](#initializers-in-range-for)
+  - [array new can deduce array size](#array-new-can-deduce-array-size)
+  - [concepts](#concepts)
+  - [ranges](#ranges)
+  - [Coroutine](#coroutine)
+  - [Module](#module)
 
 # C++ 표준
 C++ 언어는 지금까지도 ISO(국제 표준 기구)에서 전세계의 뛰어난 프로그래머들과 전문가들이 모여 C++ 표준을 개선하고 발전시키는 데 기여하고 있다.
@@ -1121,3 +1131,216 @@ for (int i = -100; i < 100; i++) {
     std::cout << std::clamp(i, -10, 10) << std::endl;
 }
 ```
+
+# C++20 언어 - 신규 기능
+## designated initialzers
+전에는 멤버의 순서대로 값을 넣어주어야 했지만 이제는 각 멤버를 이름과 함께 지정하여 초기화할 수 있게 되었다.
+
+```
+struct A {
+    int x, y, z;
+};
+
+int main() {
+    A a{ 1, 2, 3 };                // 기존 방식
+    A b{ .x = 1, .y = 1, .z = 1 }; // 지정된 초기화자 사용
+}
+```
+
+## template lambda expression
+람다식에 템플릿을 적용할 수 있게 되었다.
+
+```
+#include <iostream>
+#include <vector>
+
+int main() {
+    auto f = []<typename T>(std::vector<T> v) {
+        std::cout << v[0] << std::endl;
+    };
+
+    std::vector<int> v1{ 1, 2, 3 };
+    std::vector<char> v2{ 'a', 'b', 'c' };
+
+    f(v1);
+    f(v2);
+}
+```
+
+## Three-way Comparison Operator
+삼중 비교 연산자 `<=>`가 추가되었다. 우주선 연산자라고도 한다. 같은지, 큰지, 작은지를 한 번에 판단할 수 있다.
+
+```
+#include <iostream>
+
+int main() {
+    int x{ 5 }, y{ 4 };
+    auto result = x <=> y; // 삼중 비교 연산자
+    std::cout << std::boolalpha 
+              << " < " << std::is_lt(result) << std::endl 
+              << " >= " << std::is_gteq(result) << std::endl;
+}
+```
+
+## Initializers in range-for
+범위 기반 반목문에 초기화식 사용이 가능해졌다. 이를 통해 인덱스에 직접 접근이 어려웠던 문제를 해결할 수 있다.
+
+```
+#include <iostream> 
+
+int main() {
+    int array[]{ 1, 2, 3, 4, 5 };
+    for (int index = 0; auto e : array) {
+        std::cout << index++ << " : " << e << std::endl;
+    }
+}
+```
+
+## array new can deduce array size
+배열을 동적으로 할당할 때 크기를 추론하여 할당할 수 있게 되었다.
+
+```
+auto p = new int[]{ 1,2,3,4,5 };
+```
+
+## concepts
+타입이 반드시 따라야 하는 요구 조건을 지정하는 문법이 추가되었다. 아래와 같이 템플릿에 반드시 연산자가 존재해야 함을 명시함으로써 에러를 명료하게 만들 수 있다.
+
+```
+#include <iostream>
+#include <vector> 
+#include <concepts>
+
+template<typename T>
+concept Printable = requires(std::ostream & os, const T & input) {
+    { os << input };
+};
+
+template<Printable T>
+void Print(const T& input) {
+    std::cout << input << std::endl;
+}
+
+int main() {
+        std::vector v{ 1, 2, 3, 4 };     
+        Print(v);
+}
+```
+
+## ranges
+범위 기반 연산 기능이 추가되었다. 파이프 연산자를 통해 간략화할 수 있다.
+
+```
+#include <iostream>
+#include <vector>
+#include <ranges>
+
+int main() {
+    std::vector<int> v{ 1, 2, 3, 4, 5 };
+
+    // 범위 기반 필터릴 뷰 생성
+    auto filter = std::views::filter(v, [](int e) { return e % 2 == 0; });
+
+    for (auto e : filter) {
+        std::cout << e << " ";     
+    }
+    std::cout << std::endl;
+
+    // | 연산자를 사용한 뷰
+    auto r = v | std::views::filter([](int e) { return e % 2 != 0; });
+
+    for (auto e : r) {
+        std::cout << e << " ";
+    }
+    std::cout << std::endl;
+}
+```
+
+## Coroutine
+함수는 보통 한 번 호출되고 멈추지 않고 끝까지 실행된 뒤에 결과를 리턴한다. 하지만 때로는 함수의 실행을 멈추고 나중에 다시 이어서 실행하는 것이 유용한 경우가 있다. 이런 상황에서 코루틴이라는 개념이 도입되었다.
+
+코루틴은 함수의 실행을 중단하고 필요할 때 재개할 수 있는 기능을 제공한다. 이를 통해 함수의 실행 흐름을 유연하게 제어할 수 있어 동시성과 비동기 작업을 더욱 효율적으로 처리할 수 있게 된다. 기존의 함수와 다르게 코루틴은 여러 번 진입과 중단을 반복하면서 실행될 수 있다. 중단 및 재개에 사용되는 정보들은 힙에 저장된다.
+
+```
+#include <coroutine>
+#include <cstdint>
+#include <exception>
+#include <iostream>
+
+template <typename T>
+struct Generator {
+    struct promise_type;
+    using handle_type = std::coroutine_handle<promise_type>;
+
+    struct promise_type {
+        T value_;
+        std::exception_ptr exception_;
+
+        Generator get_return_object() {
+            return Generator(handle_type::from_promise(*this));
+        }
+
+        std::suspend_always initial_suspend() { return {}; }
+        std::suspend_always final_suspend() noexcept { return {}; }
+
+        void unhandled_exception() { exception_ = std::current_exception(); }
+
+        template <std::convertible_to<T> From>
+        std::suspend_always yield_value(From&& from) {
+            value_ = std::forward<From>(from);
+            return {};
+        }
+
+        void return_void() {}
+    };
+
+    handle_type h_;
+
+    Generator(handle_type h) : h_(h) {}
+
+    ~Generator() { h_.destroy(); }
+
+    explicit operator bool() {
+        fill();
+        return !h_.done();
+    }
+
+    T operator()() {
+        fill();
+        full_ = false;
+        return std::move(h_.promise().value_);
+    }
+
+private:
+    bool full_ = false;
+
+    void fill() {
+        if (!full_) {
+            h_();
+            if (h_.promise().exception_) {
+                std::rethrow_exception(h_.promise().exception_);
+            }
+            full_ = true;
+        }
+    }
+};
+
+Generator<int> Download() {
+    for (int i = 0; i < 100; i++) {
+        co_yield i;
+    }
+    co_return;
+}
+
+int main() {
+    auto gen = Download();
+    for (int j = 0; gen; j++) {
+        std::cout << gen() << "%" << std::endl;
+    }
+}
+```
+
+위 코드는 숫자 생성기를 구현한 예제로 Download() 함수가 코루틴을 생성하고 co_yield를 사용해 값을 생성하며 코루틴의 실행과 중단을 보여준다. 사용법이 보다시피 무지막지하다. 따라서 코루틴을 사용하기 전에 해당 기능과 관련된 문법 및 규칙을 잘 이해하고 사용하는 것이 중요하다.
+
+## Module
+C++ 컴파일러의 시간을 잡아먹는 대부분의 원인은 헤더다. 순서에 영향을 받고, 코드가 중복이 되고, 필요한 기능이 한 줄이더라도 헤더 전체를 가져오는 문제가 발생한다. 이러한 기존의 헤더파일을 대체하고 컴파일 시간을 개선할 수 있는 핵심 개념인 모듈이 도입되었다.
