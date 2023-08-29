@@ -54,6 +54,30 @@
   - [std::mutex](#stdmutex)
   - [std::lock](#stdlock)
   - [std::async](#stdasync)
+- [C++14 언어 - 일반](#c14-언어---일반)
+  - [2진수 리터럴](#2진수-리터럴)
+  - [반환 타입 추론](#반환-타입-추론)
+  - [decltype(auto)](#decltypeauto)
+  - [일반화된 람다 캡처](#일반화된-람다-캡처)
+  - [제너릭 람다](#제너릭-람다)
+  - [변수 템플릿](#변수-템플릿)
+  - [constexpr 확장](#constexpr-확장)
+  - [자리수 분리자](#자리수-분리자)
+- [C++14 STL](#c14-stl)
+  - [std::make\_unique](#stdmake_unique)
+  - [사용자 지정 리터럴 적용](#사용자-지정-리터럴-적용)
+- [C++17 언어 - 신규 기능](#c17-언어---신규-기능)
+  - [u8 chracter](#u8-chracter)
+  - [lamda this, \*this capture](#lamda-this-this-capture)
+  - [if, switch Initializer](#if-switch-initializer)
+  - [nested namespace](#nested-namespace)
+  - [Structured Bindings](#structured-bindings)
+  - [Fold Expressions](#fold-expressions)
+  - [static\_assert](#static_assert)
+- [C++17 STL](#c17-stl)
+  - [std::byte](#stdbyte)
+  - [std::gcd, std::lcm](#stdgcd-stdlcm)
+  - [std::clamp](#stdclamp)
 
 # C++ 표준
 C++ 언어는 지금까지도 ISO(국제 표준 기구)에서 전세계의 뛰어난 프로그래머들과 전문가들이 모여 C++ 표준을 개선하고 발전시키는 데 기여하고 있다.
@@ -900,5 +924,200 @@ int main() {
 
     job2.get();
     std::cout << "Download 종료" << std::endl;
+}
+```
+
+# C++14 언어 - 일반
+## 2진수 리터럴
+기존의 16진수 리터럴에 이어 `auto bin = 0b01010;`과 같이 2진수 리터럴이 추가되었다. 
+
+## 반환 타입 추론
+컴파일러가 자동으로 반환 타입을 추론하는 auto 키워드가 추가되었다. 
+
+## decltype(auto)
+decltype() 내부에 auto를 사용할 수 있게 되었다. 이를 이용해 변수의 타입을 다른 변수나 표현식의 타입과 동일하게 만들 수 있다.
+
+## 일반화된 람다 캡처
+람다식 캡처에 표현식을 넣을 수 있게 되었다. 이는 캡처한 변수나 값에 특정 연산을 수행한 값을 람다식 안에서 사용할 때 유용하다.
+
+## 제너릭 람다
+람다식의 매개변수 및 반환값에 auto를 사용해 제너릭한 람다를 만들 수 있게 되었다.
+
+## 변수 템플릿
+템플릿 변수의 사용이 가능해졌다. 템플릿을 이용해 변수를 생성하면 해당 변수의 타입과 값을 컴파일러가 알아서 유추한다.
+
+```
+template<typename T> T pi = T(3.141592653589793);
+
+int main() {
+    std::cout << "INT PI : " << pi<int> << std::endl;
+    std::cout << "FLOLT PI : " << pi<float> << std::endl;
+}
+```
+
+## constexpr 확장
+constexpr에 if, switch, for, while 구문 사용이 가능해졌다. 이를 통해 보다 복잡한 조건을 가진 코드도 컴파일 타임에 평가할 수 있다.
+
+## 자리수 분리자
+`auto money = 100'100;`와 같이 자리수를 구분하는 `'` 기호를 사용해 숫자 리터럴을 보다 가독성 있게 작성할 수 있게 되었다.
+
+# C++14 STL
+## std::make_unique
+기존에는 make_shared만 존재하였으나 make_unique가 추가되었다. new 연산자를 직접 사용하지 않고도 std::unique_ptr 객체를 생성할 수 있다.
+
+## 사용자 지정 리터럴 적용
+STL 라이브러리에도 일부 리터럴에 사용자 지정 표기가 포함되었다.
+
+```
+auto string = "Hello, World!"s; // std::string
+auto minute = 60s; // std::chrono::duration
+```
+
+# C++17 언어 - 신규 기능
+## u8 chracter
+UTF-8 인코딩 문자 리터럴을 표현하기 위해 `u8` 프리픽스가 도입되었다. 멀티바이트 문자열을 간단하게 표현할 수 있다. `std::cout << u8'가';`과 같이 사용한다.
+
+## lamda this, *this capture
+람다식 내에서 클래스 멤버 변수를 더 쉽게 캡처할 수 있게 되었다. `[*this]`를 사용하면 현재 객체를 포함한 모든 멤버 변수를 변경 가능한 상태로 캡처할 수 있다. `[this]`를 사용하면 현재 객체에 대한 상수 참조가 캡쳐된다.
+
+```
+class MyClass {
+public:
+    int mValue = 1;
+    auto DoSomething1() {
+        [*this]() mutable{ mValue++; } (); 
+        // *this는 const 객체라서 mutable만 수정 가능
+    }
+    auto DoSomething2() {
+        [this]() { mValue++; } ();
+    }
+};
+
+int main() {
+    MyClass c1;
+    std::cout << c1.mValue << std::endl; // 1
+    c1.DoSomething1();
+    std::cout << c1.mValue << std::endl; // 1
+    c1.DoSomething2();
+    std::cout << c1.mValue << std::endl; // 2
+}
+```
+
+## if, switch Initializer
+if, switch 문장에 초기화식을 추가할 수 있게 되었다. 해당 변수는 바깥쪽 코드 블록에 속하는 지역 변수가 된다.
+
+```
+int main() {
+    // older
+    int value = 0;
+    if (value > 0) {
+        std::cout << value << std::endl;
+    }
+
+    // C++17
+    if (int value = 0; value > 0) {
+        std::cout << value << std::endl;
+    }
+
+    value++;
+}
+```
+
+## nested namespace
+이름 공간을 `::` 연산자로 중첩이 가능해졌다.
+
+```
+// older
+namespace hello {
+    namespace world {
+
+    }
+}
+
+// C++17
+namespace hello::world {
+
+}
+```
+
+## Structured Bindings
+pair나 tuple같은 단순 구조를 auto를 사용해서 특정 변수로 바인딩할 수 있게 되었다.
+
+```
+std::tuple<bool, int, float> Function() {
+    return { true,1,3.14f };
+}
+
+int main() {
+    // older
+    auto r = Function();
+    std::cout << std::get<0>(r) 
+              << std::get<1>(r) 
+              << std::get<2>(r) << std::endl;
+    
+    // c++ 17
+    auto [ok, value, pi] = Function();
+    std::cout << ok << value << pi << std::endl;
+}
+```
+
+## Fold Expressions
+가변인자 템플릿에서 인자를 생략하는 기법을 사용하면 표현식에서도 사용할 수 있게 되었다.
+
+```
+template<typename...Args>
+auto Sum(Args&&... args) {
+    return (args + ... + 0);
+}
+
+int main() {
+    auto total1 = Sum(5, 8);
+    auto total2 = Sum('a', 1, 1.1, 2.2f);     
+    std::cout << total1 << std::endl;     
+    std::cout << total2 << std::endl;
+}
+```
+
+## static_assert
+static_assert를 매개변수가 없더라도 사용이 가능해졌다.
+
+```
+static_assert(sizeof(int) != 4, "int should 4 byte");     
+static_assert(sizeof(int) == 4);
+```
+
+# C++17 STL
+## std::byte
+바이트 타입을 관리할 수 있는 기능이 추가되었다. unsigned char과 달리 기본 아스키 문자 취급이 아니다.
+
+```
+#include <iostream> 
+#include <cstddef> 
+
+int main() {
+    std::byte b{ 42 };
+    std::cout << std::to_integer<int>(b) << std::endl;     
+    std::cout << static_cast<int>(b) << std::endl;
+}
+```
+
+## std::gcd, std::lcm
+최대공약수 및 최소공배수가 추가되었다.
+
+```
+#include <numeric> 
+
+int main() {
+    std::cout << std::gcd(6, 10) << std::endl; // 최대 공약수     
+    std::cout << std::lcm(6, 10) << std::endl; // 최소 공배수
+}
+```
+
+## std::clamp
+특정 범위 내로 숫자를 한정할 수 있게 되었다.
+
+```
+for (int i = -100; i < 100; i++) {
+    std::cout << std::clamp(i, -10, 10) << std::endl;
 }
 ```
