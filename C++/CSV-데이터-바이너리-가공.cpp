@@ -128,7 +128,6 @@ bool SaveFile(std::string filename, std::vector<Monster>& monsters) {
 
 bool SaveFileBinary(std::string filename, std::vector<Monster>& monsters) {
 	std::ofstream ostream;
-
 	ostream.exceptions(std::ofstream::badbit);
 
 	try {
