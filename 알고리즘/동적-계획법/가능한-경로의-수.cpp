@@ -3,40 +3,38 @@
     단, 방향은 아래쪽 또는 오른쪽으로만 가능합니다.
 
     모든 셀을 한 번씩만 방문하므로 시간 복잡도는 O(m x n)
-    바로 위쪽 셀과 바로 왼쪽 셀의 정보만 필요하므로 공간 복잡도는 O(min(m, n))
+    행과 열을 고려하므로 공간 복잡도는 O(m + n)
 --------------------------------------------------------------------------------*/
 
 #include <iostream>
-#include <vector>
+#include <map>
+#include <string>
 
-using namespace std;
+using way_history = std::map<std::string, int>;
 
-int FindWays(int m, int n) {
-    // 더 작은 값으로 m 또는 n을 선택
-    if (m > n) {
-        swap(m, n);
+int FindWays(int m, int n, way_history& h) {
+    const std::string key = std::to_string(m) + "," + std::to_string(n);
+    if (h.count(key) == 1) {
+        return h[key];
     }
 
-    // 1차원 배열을 만들고 초기화
-    vector<int> dp(m, 1);
-
-    // dp 배열을 업데이트
-    for (int i = 1; i < n; ++i) {
-        for (int j = 1; j < m; ++j) {
-            dp[j] += dp[j - 1];
-        }
+    const std::string rkey = std::to_string(n) + "," + std::to_string(m);
+    if (h.count(rkey) == 1) {
+        return h[rkey];
     }
 
-    return dp[m - 1];
+    if (m == 0 || n == 0) {
+        return 0;
+    }
+    if (m == 1 && n == 1) {
+        return 1;
+    }
+
+    h[key] = FindWays(m - 1, n, h) + FindWays(m, n - 1, h);
+    return h[key];
 }
 
 int main() {
-    int m, n;
-    cout << "행 수를 입력하세요: ";
-    cin >> m;
-    cout << "열 수를 입력하세요: ";
-    cin >> n;
-
-    int result = uniquePaths(m, n);
-    cout << "좌상단에서 우하단으로 가는 경로의 수: " << result << endl;
+    way_history h;
+    std::cout << FindWays(3, 3, h) << std::endl;
 }
