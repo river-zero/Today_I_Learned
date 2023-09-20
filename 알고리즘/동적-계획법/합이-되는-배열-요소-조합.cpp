@@ -14,14 +14,14 @@ using namespace std;
 using result = shared_ptr<vector<int>>;
 
 std::ostream& operator<<(std::ostream& os, const std::vector<int>& v) {
-    std::cout << "{";
+    std::cout << "{ ";
     for (int i = 0; i < v.size(); i++) {
         std::cout << v[i];
         if (i < v.size() - 1) {
             std::cout << ",";
         }
     }
-    std::cout << "}";
+    std::cout << " }";
     return os;
 }
 
@@ -38,7 +38,7 @@ result HowSum(const vector<int>& numbers, int sum, unordered_map<int, result>& m
     }
 
     for (const auto e : numbers) {
-        auto r = canSum(numbers, sum - e, memo);
+        auto r = HowSum(numbers, sum - e, memo);
         if (r != nullptr) {
             r->push_back(e);
             memo[sum] = r;
@@ -60,20 +60,14 @@ int main() {
 
     unordered_map<int, result> memo;
 
-    result result1 = canSum(numbers1, sum1, memo);
-    result result2 = canSum(numbers2, sum2, memo);
+    result result1 = HowSum(numbers1, sum1, memo);
+    result result2 = HowSum(numbers2, sum2, memo);
 
     std::cout << std::boolalpha;
-
-    if (result1 != nullptr) {
-        std::cout << "Result for the first scenario: " << *result1 << std::endl;
-    } else {
-        std::cout << "No combination found for the first scenario." << std::endl;
-    }
-
+    std::cout << *result1 << std::endl;
     if (result2 != nullptr) {
-        std::cout << "Result for the second scenario: " << *result2 << std::endl;
+        std::cout << *result2 << std::endl;
     } else {
-        std::cout << "No combination found for the second scenario." << std::endl;
+        std::cout << "no result" << std::endl;
     }
 }
