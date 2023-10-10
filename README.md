@@ -103,7 +103,7 @@
   - [프로그램: 힙](자료구조/비선형-자료구조/힙.cpp)
 
 ## Windows 프로그래밍
-- [Windows API](/Windows-프로그래밍/Windows-API/Windows-API.md)
+- [Windows API](/Windows-프로그래밍/Windows-API.md)
 
 ## etc
 - [CS 지식](etc/CS-지식.md)
