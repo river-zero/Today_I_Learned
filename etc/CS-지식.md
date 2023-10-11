@@ -19,6 +19,8 @@
 - [문자 집합(Character Set)](#문자-집합character-set)
 - [인코딩(Encoding)](#인코딩encoding)
 - [UTF(Unicode Transformation Format)](#utfunicode-transformation-format)
+- [랜덤](#랜덤)
+- [설계 방식](#설계-방식)
 
 # 컴퓨터 기초
 컴퓨터는 껐다 키는 스위치에서 출발한다. 컴퓨터가 0과 1로 이루어졌다고 하는 이유도 여기에 있다.
@@ -302,3 +304,71 @@ DOS 시스템을 거쳐 GUI 시스템으로 변화하면서 프로그램이 여�
 위에서 보았듯이 UTF-8 및 UTF-16과 같은 유니코드 인코딩 방식은 가변 너비 인코딩의 좋은 예이다. 각 문자는 필요에 따라 다른 수의 바이트로 효율적으로 인코딩된다. 이는 다양한 언어와 문자를 효과적으로 표현하고 저장하는 데 사용된다. 유니코드가 아닌 방식에는 크게 DBCS와 MBCS가 있으나 유니코드와 비교하여 불편한 점이 많은 편이다.
 
 UTF-16과 UTF-32 인코딩 방식은 각각 2바이트와 4바이트로 문자를 저장하므로 엔디만 문제를 일으킬 수 있다. 데이터가 엔디안 방식과 호환되지 않으면 잘못된 데이터 해석이 발생할 수 있다. 따라서 엔디안 문제와 무관하게 사용 가능한 UTF-8이 거의 표준으로 자리잡았다.
+
+# 랜덤
+컴퓨터는 엄밀하게는 난수를 생성할 수가 없다. 따라서 편법을 써서 최대한 그럴듯하게 만드는 수밖에 없다.
+
+```
+#include <iostream>
+
+int main() {
+	srand(time(nullptr));
+
+	std::cout << "--- 0 ~ 5 ---" << std::endl;
+	for (int i = 0; i < 10; i++) {
+		std::cout << rand() % 5 << std::endl;
+	}
+	
+	std::cout << "--- 5 ~ 12 ---" << std::endl;
+	for (int i = 0; i < 10; i++) {
+		std::cout << rand() % 8 + 5 << std::endl;
+	}
+	// 공식 : rand % (end - start + 1) + start
+}
+```
+
+C++에 들어서는 조금 더 고급화된 알고리즘을 사용한다. 아래는 메르센 트위스터 19937 랜덤 알고리즘을 사용한 클래스다.
+
+```
+#include <iostream>
+#include <random>
+#include <vector>
+
+int main() {
+	std::random_device rd;
+	std::mt19937 rand(rd());
+
+	for (int i = 0; i < 10; i++) {
+		std::cout << rand() % 10 << "\t";
+	}
+	std::cout << std::endl;
+
+	// 분포 제어 가능
+	std::uniform_int_distribution<> dist(0, 9);
+	for (int i = 0; i < 10; i++) {
+		std::cout << dist(rand) << "\t";
+	}
+
+	// 셔플 기능
+	std::vector<int> deck{ 1,2,3,4,5,6,7,8,9,10 };
+	for (int i = 0; i < deck.size() * 2; i++) {
+		int i1 = dist(rand);
+		int i2 = dist(rand);
+		std::swap(deck[i1], deck[i2]);
+	}
+	std::cout << std::endl;
+	for (auto e : deck) {
+		std::cout << e << "\t";
+	}
+
+	// 셔플 알고리즘 있음
+	std::shuffle(deck.begin(), deck.end(), rand);
+	std::cout << std::endl;
+	for (auto e : deck) {
+		std::cout << e << "\t";
+	}
+}
+```
+
+# 설계 방식
+프로그램을 개발할 때는 크게 두 가지 방식이 있다. 먼저, 하향식 설계(Top-Down Design)는 전체 구조를 설계하고 세부 사항을 구체화하는 방식이다. 사전 작업이 조금 걸리지만 그만큼 코딩에 들어가는 시간이 적어진다. 전체가 구현되기 전까지는 테스트가 힘들다는 단점이 있다. 그리고 상향식 설계(Bottom-Up Design)는 작은 기능을 먼저 구현한 후 시스템으로 조립하는 방식이다. 코딩과 테스트에 집중하는 만큼 시간이 오래 걸린다. 단위 테스트를 자동화할 수 있다면 매우 안정적이고 효율적이다. 그렇지 않다면 개발 시간이 걸린다.

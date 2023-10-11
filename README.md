@@ -103,7 +103,11 @@
   - [프로그램: 힙](자료구조/비선형-자료구조/힙.cpp)
 
 ## Windows 프로그래밍
-- [Windows API](/Windows-프로그래밍/Windows-API.md)
+- [Windows API](Windows-프로그래밍/Windows-API.md)
+- [GDI](Windows-프로그래밍/GDI.md)
+- [GDI+](Windows-프로그래밍/GDI+.md)
+  - [프로그램: 빈 윈도우 프로그램](Windows-프로그래밍/빈-윈도우-프로그램.cpp)
+  - [프로그램: 간단한 윈도우 프로그램](Windows-프로그래밍/간단한-윈도우-프로그램.cpp)
 
 ## etc
 - [CS 지식](etc/CS-지식.md)
