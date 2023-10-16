@@ -108,7 +108,10 @@
 - [GDI+](Windows-프로그래밍/GDI+.md)
   - [프로그램: 빈 윈도우 프로그램](Windows-프로그래밍/빈-윈도우-프로그램.cpp)
   - [프로그램: 간단한 윈도우 프로그램](Windows-프로그래밍/간단한-윈도우-프로그램.cpp)
+- [DirectX](Windows-프로그래밍/DirectX.md)
+  - [프로그램: D2D 실습](Windows-프로그래밍/D2D-실습.cpp)
 
 ## etc
 - [CS 지식](etc/CS-지식.md)
 - [정규표현식](etc/정규표현식.md)
+- [컴퓨터 그래픽스](etc/컴퓨터-그래픽스.md)
