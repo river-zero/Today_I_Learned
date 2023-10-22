@@ -25,6 +25,21 @@ void InsertionSort(int input[], int size) {
 	}
 }
 
+/*-------------------------------------------
+void InsertionSort(int input[], int size) {
+	for (int i = 1; i < size; i++) {
+		int target = input[i];
+		int j = i - 1;
+
+		while (j >= 0 && input[j] > target) {
+			input[j + 1] = input[j];
+			j--;
+		}
+		input[j + 1] = target;
+	}
+}
+-------------------------------------------*/
+
 int main() {
 	const int ARRAY_SIZE{ 5 };
 	int array[ARRAY_SIZE]{ 8,7,2,3,1 };
