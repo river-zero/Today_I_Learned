@@ -118,6 +118,8 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 		oss << "x : " << LOWORD(lParam)
 			<< ", y : " << HIWORD(lParam) << std::endl;
 		OutputDebugStringA(oss.str().c_str());
+		// oss의 내용을 C++ 문자열로 변환하고
+		// C 스타일의 문자열로 변환해 해당 문자열의 포인터를 반환
 		break;
 	}
 	case WM_KEYDOWN:
