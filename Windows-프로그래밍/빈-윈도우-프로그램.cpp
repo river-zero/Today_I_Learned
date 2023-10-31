@@ -41,7 +41,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
         NULL);
     if (hwnd == nullptr)
     {
-        MessageBox(nullptr, L"Failed to create window class!", L"Error", MB_ICONEXCLAMATION | MB_OK);
+        MessageBox(nullptr, L"Failed to create window class", L"Error", MB_ICONEXCLAMATION | MB_OK);
         return 0;
     }
 
