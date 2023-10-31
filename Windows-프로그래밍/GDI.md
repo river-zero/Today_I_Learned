@@ -50,7 +50,6 @@ GDI는 성능을 위해서 화면에 매번 그림을 다시 그리는 것이 �
 이 메시지는 UpdateWindow 또는 RedrawWindow 함수가 호출되거나, 애플리케이션이 GetMessage 또는 PeekMessage 함수를 사용하여 WM_PAINT 메시지를 가져올 때 DispatchMessage 함수에 의해 전송된다.
 
 ```
-```
 LRESULT CALLBACK WindowProc(
     HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam
 ) {
@@ -77,7 +76,6 @@ LRESULT CALLBACK WindowProc(
     }
     return 0;
 }
-```
 ```
 
 # WM_ERASEBKGND
