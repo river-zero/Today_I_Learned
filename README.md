@@ -108,7 +108,6 @@
   - [프로그램: 빈 윈도우 프로그램](Windows-프로그래밍/빈-윈도우-프로그램.cpp)
 - [GDI+](Windows-프로그래밍/GDI+.md)
   - [프로그램: 간단한 윈도우 프로그램](Windows-프로그래밍/간단한-윈도우-프로그램.cpp)
-  - [프로그램: 짝 맞추기 게임](https://github.com/river-zero/game-memory)
 - [DirectX](Windows-프로그래밍/DirectX.md)
   - [프로그램: D2D 실습](Windows-프로그래밍/D2D-실습.cpp)
 - [프레임워크](Windows-프로그래밍/프레임워크.md)
