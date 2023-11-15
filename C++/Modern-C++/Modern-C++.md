@@ -438,7 +438,7 @@ nt\Hell	o\World)";
 ```
 
 ## std::static_assert
-기존의 assert는 주로 런타임에 프로그램의 논리적인 조건을 체크하고 조건이 거짓인 경우 프로그램을 종료하였다. 반면에 std::static_assert는 컴파일 타임에 조건을 검사하여 조건이 거짓이면 컴파일러가 해당 위치에서 컴파일을 중단하고 에러 메시지를 출력한다. 이는 프로그램이 컴파일되는 동안에 발생할 수 있는 오류를 미리 방지하는데 사용한다. 이때 조건은 상수 표현식이다.
+기존의 assert는 주로 런타임에 프로그램의 논리적인 조건을 체크하고 조건이 거짓인 경우 프로그램을 종료하였다. 반면에 std::static_assert는 컴파일 타임에 조건을 검사하여 조건이 거짓이면 컴파일러가 해당 위치에서 컴파일을 중단하고 에러 메시지를 출력한다. 이는 프로그램이 컴파일되는 동안에 발생할 수 있는 오류를 미리 방지하는데 사용한다. const_expr을 판정한다.
 
 ## 메모리 정렬
 객체 안의 변수들이 메모리에서 어떻게 배치되는지를 지정하는 방법이다. 이를 통해 변수들이 메모리 상에서 특정 크기의 배수로 정렬되도록 할 수 있다.
@@ -505,6 +505,10 @@ int main() {
 여기서 팩토리 함수란 객체 생성과 초기화를 추상화하여 객체를 생성하는데 필요한 복잡한 과정을 알 필요 없이 쉽게 사용할 수 있도록 해주는 함수를 말한다.
 
 ```
+Warrior* Make() { return new Warrior; }
+Archer* Make(int arg1) { return new Archer; }
+Wizard* Make(int arg1, int arg2) { return new Wizard; }
+
 template<class T, class... Types>
 T* Make(Types&& ... args)
 {
@@ -629,17 +633,17 @@ public:
 
 int main() {
     std::shared_ptr<Image> spImage = std::make_shared<Image>();
-    // mspImage : 1
+    // spImage : 1
     {
         std::unique_ptr<Demon> spDemon = std::make_unique<Demon>(100, 10, spImage);
-        // mspImage : 2
+        // spImage : 2
         {
             std::unique_ptr<Demon> spDemon2 = std::make_unique<Demon>(100, 10, spImage);
-            // mspImage : 3
+            // spImage : 3
         }
-        // mspImage : 2
+        // spImage : 2
     }
-    // mspImage : 1
+    // spImage : 1
 }
 ```
 
@@ -942,7 +946,13 @@ int main() {
 기존의 16진수 리터럴에 이어 `auto bin = 0b01010;`과 같이 2진수 리터럴이 추가되었다. 
 
 ## 반환 타입 추론
-컴파일러가 자동으로 반환 타입을 추론하는 auto 키워드가 추가되었다. 
+auto로 컴파일러가 자동으로 반환값을 추론할 수 있게 되었다.
+
+```
+auto Function(int x, int y) {
+    return x + y;
+}
+```
 
 ## decltype(auto)
 decltype() 내부에 auto를 사용할 수 있게 되었다. 이를 이용해 변수의 타입을 다른 변수나 표현식의 타입과 동일하게 만들 수 있다.
@@ -1238,7 +1248,7 @@ int main() {
 int main() {
     std::vector<int> v{ 1, 2, 3, 4, 5 };
 
-    // 범위 기반 필터릴 뷰 생성
+    // 범위 기반 필터링 뷰 생성
     auto filter = std::views::filter(v, [](int e) { return e % 2 == 0; });
 
     for (auto e : filter) {
