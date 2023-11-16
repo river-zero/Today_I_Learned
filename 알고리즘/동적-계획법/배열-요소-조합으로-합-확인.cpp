@@ -24,7 +24,7 @@ bool CanSum(int sum, const vector<int>& numbers) {
 
     for (int num : numbers) {
         int remainder = sum - num;
-        if (canSum(remainder, numbers)) {
+        if (CanSum(remainder, numbers)) {
             memo[sum] = true;
             return true;
         }
@@ -35,13 +35,13 @@ bool CanSum(int sum, const vector<int>& numbers) {
 }
 
 int main() {
-    vector<int> numbers1 = {2, 3, 5};
+    vector<int> numbers1 = { 2, 3, 5 };
     int sum1 = 8;
-    
-    vector<int> numbers2 = {8,6};
+
+    vector<int> numbers2 = { 8,6 };
     int sum2 = 7;
 
     std::cout << std::boolalpha;
-    std::cout << canSum(sum1, numbers1) << std::endl;        
-    std::cout << canSum(sum2, numbers2) << std::endl;
+    std::cout << CanSum(sum1, numbers1) << std::endl;
+    std::cout << CanSum(sum2, numbers2) << std::endl;
 }
