@@ -1,10 +1,10 @@
 /*--------------------------
-	SimpleData.txt
+    SimpleData.txt
 
-	--- MONSTER DATA ---
-	SLIME,1,1,1
-	WOLF,5,5,5
-	DEMON,10,10,10
+    --- MONSTER DATA ---
+    SLIME,1,1,1
+    WOLF,5,5,5
+    DEMON,10,10,10
 --------------------------*/
 
 #include <iostream>
@@ -12,7 +12,7 @@
 #include <sstream>
 #include <vector>
 
-struct Header { // POD
+struct Header {
 	int version{ 1 };
 	int itemCount{};
 };
