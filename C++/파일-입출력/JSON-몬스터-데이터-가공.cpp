@@ -101,6 +101,9 @@ public:
 };
 
 bool SaveToJson(const std::string& path, std::vector<Monster>& monsters) {
+	// 모바일 게임에서 서버와 통신을 JSON으로 하는 경우
+	// 객체 -> DOM -> JSON 방법을 사용하나 여기선 그냥 바로 JSON 문자열로 변환
+
 	StringBuffer sb; // rapidjson 제공
 	PrettyWriter<StringBuffer> writer(sb);
 
@@ -169,6 +172,7 @@ bool LoadFromJson(const std::string& path, std::vector<Monster>& monsters) {
 		// std::cout << ifs.rdbuf() << std::endl;
 
 		ss << ifs.rdbuf();
+		// 파일의 내용을 문자열 스트림에 복사
 
 		ifs.close();
 	} catch (std::ifstream::failure& e) {
