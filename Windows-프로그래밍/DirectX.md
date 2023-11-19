@@ -29,8 +29,35 @@ COM의 인터페이스 중심 접근 방식은 상속 기반의 객체 지향 �
 # Render Target
 말 그대로 그릴 대상을 말한다. 이 대상은 모니터 화면 외에도 메모리나 파일 또는 다른 그래픽 표면을 말하기도 한다. 일반적으로는 그리팩 화면을 가리키며 그림을 그리고 화면에 표시하는 데 사용된다. 메모리나 파일로 설정하면 그래픽을 저장하는 데 사용할 수 있다.
 
+D2D1::RenderTargetProperties()으로 렌더 타겟의 특성을 지정한다. D2D1_RENDER_TARGET_PROPERTIES 구조체를 사용한다.
+|            구성요소            |                                                    설명                                                    |
+| :----------------------------: | :--------------------------------------------------------------------------------------------------------: |
+|  D2D_RENDER_TARGET_TYPE type   |                           D2D1_RENDER_TARGET_TYPE_DEFAULT : 가능하면 GPU를 사용                            |
+|                                |                           D2D1_RENDER_TARGET_TYPE_SOFTWARE : CPU를 사용해 렌더링                           |
+|                                |                           D2D1_RENDER_TARGET_TYPE_HARDWARE : GPU를 사용해 렌더링                           |
+| D2D1_PIXEL_FORMAT pixelFormat  |                화면의 픽셀 하나가 어떤 형태인지를 지정하는 것으로 색상 및 알파를 지정 가능                 |
+|           FLOAT dpiX           |                                                  가로 dpi                                                  |
+|           FLOAT dpiY           |                                                  세로 dpi                                                  |
+| D2D1_RENDER_TARGET_USAGE usage |                               D2D1_RENDER_TARGET_USAGE_NONE : GDI 호환 안됨                                |
+|                                | D2D1_RENDER_TARGET_USAGE_FORCE_BITMAP_REMOTING : BITMAP으로 내부에서 그린 후 원격 클라이언트로 보내는 용도 |
+|                                |                             D2D1_RENDER_TARGET_USAGE_GDI_COMPATIBLE : GDI 호환                             |
+|  D2D1_FEATURE_LEVEL minLevel   |                               D2D1_FEATURE_LEVEL_DEFAULT : 특별한 제한 없음                                |
+|                                |                                   D2D1_FEATURE_LEVEL_9 : DirectX 9 호환                                    |
+|                                |                                  D2D1_FEATURE_LEVEL_10 : DirectX 10 호환                                   |
+
 # GetMessage()
 Windows API에서 제공되는 함수 중 하나로 Windows 메시지 큐에서 메시지를 얻는 데 사용한다. 메시지를 가져와 처리하고 메시지 큐에서 메시지를 제거한다. 메시지 큐에 대기 중인 메시지가 없을 경우에는 프로그램의 실행이 일시 중단되어 메시지가 도착할 때까지 대기한다.
 
 # PeekMessage()
 Windows API에서 사용되는 함수로 Windows 메시지 큐에서 메시지를 가져오는 함수 중 하나다. GetMessage 함수와 달리 메시지를 가져오지 않고 대신 메시지 큐의 상단에 있는 메시지를 슬쩍 확인만 한다. 따라서 메시지를 확인한 후에 선택적으로 메시지를 처리하거나 무시할 수 있다. 메시지 큐에 대기 중인 메시지를 확인하여 대기하지 않고 다른 작업을 수행하도록 해준다. 따라서 게임과 같이 빠른 처리가 필요할 경우에 사용한다.
+
+|   구성요소    |                                    설명                                    |
+| :-----------: | :------------------------------------------------------------------------: |
+|     lpMsg     |                                멧지 구조체                                 |
+|     hWnd      | 윈도우 핸들로 nullptr이면 모든 윈도우 메시지와 스레드의 모든 메시지를 처리 |
+| wMsgFilterMin |           가져올 메시지의 시작 범위로 0이면 모든 메시지를 가져옴           |
+| wMsgFilterMax |            가져올 메시지의 끝 범위로 0이면 모든 메시지를 가져옴            |
+|  wRemoveMsg   |                 메시지를 어떻게 처리할 것인지에 대한 설정                  |
+|               |                 PM_NOREMOVE : 처리한 후 큐에서 지우지 않음                 |
+|               |                     PM_REMOVE : 처리한 후 큐에서 삭제                      |
+|               |              PM_NOYIELD : 다른 스레드로 제어권을 넘기지 않음               |
