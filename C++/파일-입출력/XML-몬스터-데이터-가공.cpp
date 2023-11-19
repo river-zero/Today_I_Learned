@@ -67,10 +67,14 @@ void SaveToXML(std::string path, std::vector<Monster2>& monsters) {
 	XMLDocument doc;
 	
 	XMLDeclaration* dec1 = doc.NewDeclaration(R"(xml version="1.0 encoding="EUC-KR")");
+	// 사용하는 문자열 시스템이 유니코드 인코딩을 사용하지 않기 때문에 처리가 복잡
+	// 따라서 EUC-KR로 지정
 	doc.LinkEndChild(dec1);
+	// 선언부를 doc에 붙임
 
 	XMLElement* root = doc.NewElement("monsters");
 	doc.LinkEndChild(root);
+	// 새로운 원소는 무조건 doc를 통해서만 생성 가능
 
 	for (auto& monster : monsters) {
 		auto monElement = doc.NewElement("monster");
@@ -95,6 +99,7 @@ void SaveToXML(std::string path, std::vector<Monster2>& monsters) {
 	}
 
 	doc.SaveFile(path.c_str());
+	// 성공은 XML_SUCCESS
 }
 
 void LoadFromXML(std::string path, std::vector<Monster2>& monsters) {

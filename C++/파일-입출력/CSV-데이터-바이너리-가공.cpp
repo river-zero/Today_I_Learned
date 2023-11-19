@@ -67,6 +67,7 @@ public:
 	void ReadBinary(std::istream& is) {
 		int nameLen{};
 		is.read(reinterpret_cast<char*>(&nameLen), sizeof(int));
+		mName.resize(nameLen);
 		//is.read(reinterpret_cast<char*>(&mName), nameLen);
 		is.read(&mName[0], nameLen);
 		is.read(reinterpret_cast<char*>(&mLevel), sizeof(int));
