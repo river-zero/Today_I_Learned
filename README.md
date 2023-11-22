@@ -113,6 +113,8 @@
   - [프로그램: D2D 프레임워크 빈 화면 실습](Windows-프로그래밍/D2D-프레임워크-빈-화면-실습.cpp)
 - [비트맵](Windows-프로그래밍/비트맵.md)
   - [프로그램: 비트맵 도형 실습](Windows-프로그래밍/비트맵-도형-실습.cpp)
+- [Windows Imaging Component](Windows-프로그래밍/Windows-Imaging-Component.md)
+  - [프로그램: WIC 이미지 실습](Windows-프로그래밍/WIC-이미지-실습.cpp)
 
 ## 서버
 - [개론](서버/개론/개론.md)
