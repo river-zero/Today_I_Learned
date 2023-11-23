@@ -115,6 +115,8 @@
   - [프로그램: 비트맵 도형 실습](Windows-프로그래밍/비트맵-도형-실습.cpp)
 - [Windows Imaging Component](Windows-프로그래밍/Windows-Imaging-Component.md)
   - [프로그램: WIC 이미지 실습](Windows-프로그래밍/WIC-이미지-실습.cpp)
+- [스프라이트](Windows-프로그래밍/스프라이트.md)
+  - [프로그램: 스프라이트 그리기 실습](Windows-프로그래밍/스프라이트-그리기-실습.cpp)
 
 ## 서버
 - [개론](서버/개론/개론.md)
