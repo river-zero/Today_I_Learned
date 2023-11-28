@@ -95,7 +95,7 @@ void DrawTriangle::InitPipeline() {
 	Microsoft::WRL::ComPtr<ID3DBlob> spVS;
 	Microsoft::WRL::ComPtr<ID3DBlob> spPS;
 
-	// 정점 셰이더와 픽셀 셰이더 컴파일 및 생성
+	// 정점 셰이더와 픽셀 셰이더 컴파일
 	D3DCompileFromFile(
 		L"VertexShader.hlsl", // 컴파일할 HLSL 파일 이름
 		0,                    // HLSL의 매크로 목록
