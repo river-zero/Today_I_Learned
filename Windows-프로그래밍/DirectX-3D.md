@@ -29,6 +29,22 @@
 - [WM\_EXITSIZEMOVE](#wm_exitsizemove)
 - [WM\_MENUCHAR](#wm_menuchar)
 - [WM\_GETMINMAXINFO](#wm_getminmaxinfo)
+- [ID3D11Device::CreateBuffer()](#id3d11devicecreatebuffer)
+- [ID3D11DeviceConstext::Map()](#id3d11deviceconstextmap)
+- [D3DCompileFromFile()](#d3dcompilefromfile)
+- [ID3D11Device::CreateVertexShader()](#id3d11devicecreatevertexshader)
+- [ID3D11Device::CreatePixelShader()](#id3d11devicecreatepixelshader)
+- [ID3D11DeviceConstext::VSSetShader()](#id3d11deviceconstextvssetshader)
+- [ID3D11DeviceCont4xt::PSSetShader()](#id3d11devicecont4xtpssetshader)
+- [D3D11\_INPUT\_ELEMENT\_DESC](#d3d11_input_element_desc)
+- [ID3D11Device::CreateInputLayout()](#id3d11devicecreateinputlayout)
+- [ID3D11DeviceContext::IASetInputLayout()](#id3d11devicecontextiasetinputlayout)
+- [ID3D11DeviceContext::IASetVertexBuffer()](#id3d11devicecontextiasetvertexbuffer)
+- [ID3D11DeviceContext::IASetPrimitiveTopology()](#id3d11devicecontextiasetprimitivetopology)
+- [ID3D11DeviceContext::Draw()](#id3d11devicecontextdraw)
+- [윈도우 생성 과정 정리](#윈도우-생성-과정-정리)
+- [Direct3D 생성 및 그리기 과정 정리](#direct3d-생성-및-그리기-과정-정리)
+- [파이프 라인과 셰이더 과정 정리](#파이프-라인과-셰이더-과정-정리)
 
 # define WIN32_LEAN_AND_MEAN
 Windows.h 헤더 파일을 포함할 때 일부 추가 기능을 비활성화하여 컴파일 시간을 단축한다.
@@ -250,3 +266,110 @@ ID3D11Resource 인터페이스를 상속하며, 2D 이미지 데이터를 저장
 
 # WM_GETMINMAXINFO
 윈도우 사이즈나 위치가 변경되기 직전에 전달되는 윈도우 메시지다. 윈도우가 너무 크거나 작아지지 않도록 예외 처리를 할 수 있다. lParam에 MINMAXINFO 구조체의 포인터가 넘어오는데, 이 구조체의 멤버를 변경해주면 윈도우 기본값을 원하는 값으로 변경이 가능하다.
+
+# ID3D11Device::CreateBuffer()
+CD3D11_BUFFER_DESC에서 생성한 버퍼 설명으로 버퍼를 생성한다.
+
+|              형식               |      변수      |                                                        설명                                                         |
+| :-----------------------------: | :------------: | :-----------------------------------------------------------------------------------------------------------------: |
+|   `const D3D11_BUFFER_DESC*`    |    `pDesc`     |                                        버퍼를 설명하는 구조체에 대한 포인터                                         |
+| `const D3D11_SUBRESOURCE_DATA*` | `pInitialData` | 초기 데이터를 저장한 구조체 포인터로 NULL을 넘기면 미정 상태로 남게 되며 사용하기 전에 직접 데이터를 채워 넣어야 함 |
+|        `ID3D11Buffer**`         |   `ppBuffer`   |                                           생성한 버퍼 인터페이스의 포인터                                           |
+
+# ID3D11DeviceConstext::Map()
+CPU가 값을 쓰고 GPU가 읽어간다고 하였는데 이 과정이 서로 맞지 않으면 값을 쓰는 도중 GPU가 읽어갈 수도 있다. 그러면 이상한 결과가 나온다. 이를 막기 위해서 Map과 Unmap을 사용한다.  CPU에서 GPU 리소스에 직접 접근할 때, GPU가 해당 리소스에 접근하는 것을 방지한다. 그리고 값을 다 쓰고 나면 GPU가 가져갈 수 있도록 Unmap을 한다. 복잡하지만 이런 방식의 설계를 통해 GPU/CPU를 분리해 더욱 안전하게 하드웨어 가속을 처리할 수 있다. 버퍼에 접근할 때는 해당 버퍼가 GPU가 사용하는지를 확인하고 Map/Unmap을 수행한다고 생각하면 된다.
+
+# D3DCompileFromFile()
+파일에서 HLSL 코드를 읽어들이고 해당 코드를 컴파일하여 셰이더 바이트 코드를 생성한다.
+
+# ID3D11Device::CreateVertexShader()
+버텍스 셰이더를 생성하는 데 사용한다. 생성된 정점 셰이더는 ID3D11VertexShader 인터페이스를 통해 조작된다.
+
+# ID3D11Device::CreatePixelShader()
+픽셀 셰이더를 생성하는 데 사용한다. 생성된 픽셀 셰이더는 ID3D11PixelShader 인터페이스를 통해 조작된다.
+
+# ID3D11DeviceConstext::VSSetShader()
+파이프 라인에서 버텍스 셰이더 스테이지에 사용할 정점 셰이더를 지정한다.
+
+# ID3D11DeviceCont4xt::PSSetShader()
+파이프 라인에서 픽셀 셰이더 스테이지에 사용할 픽셀 셰이더를 지정한다.
+
+# D3D11_INPUT_ELEMENT_DESC
+Input-Assenber 스테이지의 입력 값(버텍스 셰이더라면 버텍스, 픽셀 셰이더라면 픽셀) 하나가 어떤 식으로 되어 있는가를 지정한다.
+
+```
+typedef struct D3D11_INPUT_ELEMENT_DESC {
+  LPCSTR                     SemanticName;         // 의미론적 이름
+  UINT                       SemanticIndex;        // 의미론적 인덱스
+  DXGI_FORMAT                Format;               // 데이터 형식
+  UINT                       InputSlot;            // 입력 슬롯 인덱스
+  UINT                       AlignedByteOffset;    // 바이트 오프셋
+  D3D11_INPUT_CLASSIFICATION InputSlotClass;       // 입력 슬롯 분류
+  UINT                       InstanceDataStepRate; // 인스턴스당 스텝 비율
+} D3D11_INPUT_ELEMENT_DESC;
+```
+
+# ID3D11Device::CreateInputLayout()
+D3D11_INPUT_ELEMENT_DESC 구조체 정보들로 입력 레이아웃을 만든다. 주로 정점 셰이더에 대한 정보만으로 충분하며, 픽셀 셰이더에 대한 정보는 해당 셰이더를 사용할 때 자동으로 처리된다.
+
+# ID3D11DeviceContext::IASetInputLayout()
+Input-Assenbler에 입력 레이아웃을 연결(bind)한다.
+
+# ID3D11DeviceContext::IASetVertexBuffer()
+Input-Assenbler에 버텍스 버퍼를 연결한다. GPU는 이 버텍스 버퍼를 읽기 시작한다. 버텍스 버퍼를 연결해 줄때는 stride와 offset이 필요하다. Vn = offset + (n - 1) * stride와 같이 1차원 버퍼에 접근하는 방식이다.
+
+# ID3D11DeviceContext::IASetPrimitiveTopology()
+Primitive 유형을 설정한다. 그래픽 파이프라인에서 입력 조립 단계는 정점 데이터를 기본 프리미티브로 조립하고, 이를 래스터화(Rasterization) 단계로 전달한다.
+
+# ID3D11DeviceContext::Draw()
+실제로 화면에 그리는 함수다. 삼각형 그리기 프로그램을 실행해보면 그라데이션이 보인다. 이는 디바이스가 삼각형을 그릴 때 각 꼭짓점의 색상에 대한 거리를 보간해서 삼각형 내부를 그리기 때문이다.
+
+# 윈도우 생성 과정 정리
+1. WNDCLASSEX 구조체에 정보 설정
+2. RegisterClass(&wc)로 클래스 등록
+3. CreateWindow("class name")으로 해당 클래스에서 윈도우 생성
+4. ShowWindow()로 화면에 표시
+5. 윈도우 프로시저로 메시지 처리
+
+# Direct3D 생성 및 그리기 과정 정리
+1. 스왑 체인 정보 구조체 설정
+2. D3D11CreateDeviceAndSwapChain으로 스왑 체인, 디바이스, 디바이스 컨텍스트 생성
+3. 후면 버퍼를 얻어와서 렌더 타겟 뷰 생성
+4. 깊이 스텐실 버퍼용 텍스처2D 생성
+5. 깊이 스텐실 버퍼로부터 깊이 스텐실 뷰 생성
+6. 3번, 5번의 뷰를 이용해 렌더 타겟 지정
+7. 뷰포트 지정
+8. 후면 버퍼 클리어
+9. 깊이 스텐실 버퍼 클리어
+10. 겡미에서 사용할 그리기 루틴
+11. 스왑 체인의 Present()
+
+# 파이프 라인과 셰이더 과정 정리
+1. 셰이더 컴파일
+2. 버텍스 셰이더, 픽셀 셰이더 생성
+3. 입력 레이아웃 구조 바인딩
+4. 버텍스 버퍼 생성(Map/Unmap)
+5. 그리기
+
+지금까지 작업한 Device와 Device Context에서 사용한 함수를 따로 뽑으면 아래와 같다. 디바이스는 버퍼/텍스처 등의 리소스를 만들고 리소스에 접근하는 뷰를 만든다. 디바이스 컨텍스트는 파이프 라인을 설정하거나 실제로 화면에 그린다.
+
+Device
+- CreateBuffer
+- CreateVertexShader
+- CreatePixelShader
+- CreateInputLayout
+- CreateRenderTargetView
+- CreateTexture2D
+- CreateDpthStencilView
+
+Device Context
+- Map, Unmap
+- VSSetShader, PSSetShader
+- IASetInputLayout
+- ClearRenderTargetView
+- ClearDepthStencilView
+- IASetVertexBuffers
+- IASetPrimitiveTopology
+- Draw
+- OMSetRenderTargets
+- RSSetViewports
