@@ -56,6 +56,18 @@
 - [D3D11\_RENDER\_TARGET\_BLEND\_DESC](#d3d11_render_target_blend_desc)
 - [ID3D11Device::CreateBlendState()](#id3d11devicecreateblendstate)
 - [ID3D11DeviceContext::OMSetBlendState()](#id3d11devicecontextomsetblendstate)
+- [QueryPerformanceFrequency()](#queryperformancefrequency)
+- [QueryPerformanceCount()](#queryperformancecount)
+- [SetWindowText()](#setwindowtext)
+- [ID3D11DeviceConstext::VSSetConstantBuffers()](#id3d11deviceconstextvssetconstantbuffers)
+- [ID3D11DeviceContext::UpdateSubresources()](#id3d11devicecontextupdatesubresources)
+- [DirectX::XMMATRIX](#directxxmmatrix)
+- [DirectX::XMMATRIXTranspose()](#directxxmmatrixtranspose)
+- [DirectX::XMMatrixIdentity()](#directxxmmatrixidentity)
+- [DirectX::XMMatrixRotationZ()](#directxxmmatrixrotationz)
+- [DirectX::XMMatrixTranslation()](#directxxmmatrixtranslation)
+- [DirectX::XM\_PI](#directxxm_pi)
+- [Dynamic Usage vs Default Usage](#dynamic-usage-vs-default-usage)
 
 # define WIN32_LEAN_AND_MEAN
 Windows.h 헤더 파일을 포함할 때 일부 추가 기능을 비활성화하여 컴파일 시간을 단축한다.
@@ -434,3 +446,57 @@ Output-Merget 스테이지에 사용할 블렌딩 상태를 생성한다.
 
 # ID3D11DeviceContext::OMSetBlendState()
 Output-Merget 스테이지에 블렌딩 상태를 지정한다.
+
+# QueryPerformanceFrequency()
+Windows 플랫폼에서 고성능 타이머의 주파수를 얻기 위한 함수다. 프로그램이 실행 중인 시스템의 하드웨어 타이머가 초당 몇 번의 카운트를 측정할 수 있는지를 나타내는 값을 반환한다. 컴퓨터의 성능에 관계 없이 동일한 시간 결과를 내기 위해서 필요하다.
+
+# QueryPerformanceCount()
+Windows 플랫폼에서 고성능 타이머의 현재 카운터 값을 얻기 위한 함수다. QueryPerformanceFrequency 함수로 얻은 주파수를 사용하여 초당 카운트 수를 기준으로 현재의 시간을 나타내는 카운터 값을 반환한다.
+
+# SetWindowText()
+주로 윈도우의 타이틀 바에 텍스트를 설정하고자 할 때 사용한다. 타이틀 바에 표시되는 텍스트를 변경함으로써 사용자에게 현재 프로그램에 대한 정보를 전달할 수 있다.
+
+# ID3D11DeviceConstext::VSSetConstantBuffers()
+ID3D11DeviceConstext::VSSetConstantBuffers 함수는 Vertex Shader에 상수 버퍼를 설정해 CPU에서 GPU로 상수 데이터를 전송할 수 있다.
+
+상수 버퍼를 사용하면 행렬과 같은 변하는 데이터를 매번 GPU에 업로드하는 대신, 상수 버퍼에 업데이트하고 한 번의 전송으로 여러 버텍스에 대한 변형을 수행할 수 있다. 이것은 성능 향상을 가져온다.
+
+# ID3D11DeviceContext::UpdateSubresources()
+CPU가 메모리에서 데이터를 복사해 Map/Unmap 불가능한 서브 리소스로 넘겨준다. 간단히 말해, CPU에서 GPU로 필요한 데이터를 전송하여 그래픽 자원을 업데이트하는 데 사용한다.
+
+|       형식       |      변수      |            설명             |
+| :--------------: | :------------: | :-------------------------: |
+| ID3D11Resource*  |  pDstResource  |    수정할 리소스 포인터     |
+|       UINT       | DstSubresource |  수정할 하위 리소스 인덱스  |
+| const D3D11_BOX* |    pDstBox     | 수정할 리소스의 사각형 영역 |
+|   const void*    |    pSrcData    |   메모리의 넘겨줄 데이터    |
+|       UINT       |  SrcRowPitch   |   원본 데이터의 열 Pitch    |
+|       UINT       | SrcDepthPitch  |  원 본데이터의 깊이 Pitch   |
+
+# DirectX::XMMATRIX
+행렬을 나나내는 자료형 중 하나다. SIMD(Single Instruction, Multiple Data) 명령어를 활용하여 벡터 및 행렬 연산을 효율적으로 수행할 수 있도록 최적화된 자료형이다. 기본적으로 4 x 4 행렬이다.
+
+# DirectX::XMMATRIXTranspose()
+행렬의 전치 행렬을 구한다. DirectX의 열 기준 방식에서 HLSL의 행 기준 방식으로 변환하기 위한 작업이다.
+
+# DirectX::XMMatrixIdentity()
+단위 행렬을 만들어 반환한다.
+
+# DirectX::XMMatrixRotationZ()
+Z축을 기준으로 회전하는 행렬을 만들어 반환한다. 
+
+# DirectX::XMMatrixTranslation()
+지정된 좌표로 이동하는 행렬을 생성한다.
+
+# DirectX::XM_PI
+상수로 원주율(3.14159265358979323846)을 나타낸다.
+
+# Dynamic Usage vs Default Usage
+실습한 프로그램에서는 D3D11_USAGE_DYNAMIC을 사용하지 않았다. CPU에서 항상 접근해야 하므로 버텍스 버퍼처럼 설계하는 것이 맞다. 하지만 간단한 데이터라면 기본으로 생성한 후 Map/Unmap 방식이 아닌UpdateSubresource 형태로도 접근이 가능하다는 점이다. 
+
+|       |     Dynamic Usage      |     Default Usage      |
+| :---: | :--------------------: | :--------------------: |
+| 용도  |   CPU 쓰기, GPU 읽기   |    GPU 읽기 및 쓰기    |
+| 장점  |  매 프레임 단위 연산   |  자주 변하지 않는 값   |
+| 단점  |    Map/Unmap의 부하    | UpdateSubresource 부하 |
+| 예시  | 버텍스 버퍼, 상수 버퍼 |         텍스처         |
