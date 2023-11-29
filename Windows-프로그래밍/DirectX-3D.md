@@ -45,6 +45,17 @@
 - [윈도우 생성 과정 정리](#윈도우-생성-과정-정리)
 - [Direct3D 생성 및 그리기 과정 정리](#direct3d-생성-및-그리기-과정-정리)
 - [파이프 라인과 셰이더 과정 정리](#파이프-라인과-셰이더-과정-정리)
+- [ID3D11ShaderResourceView](#id3d11shaderresourceview)
+- [D3D11\_SHADER\_RESOURCE\_VIEW\_DESC](#d3d11_shader_resource_view_desc)
+- [D3D11\_SUBRESROUCE\_DATA](#d3d11_subresrouce_data)
+- [ID3D11Device::CreateShaderResourceView()](#id3d11devicecreateshaderresourceview)
+- [ID3D11DeviceContext::PSSetShaderRewources()](#id3d11devicecontextpssetshaderrewources)
+- [D3D11\_SAMPLER\_DESC](#d3d11_sampler_desc)
+- [ID3D11DeviceContext::PSSetSamplers()](#id3d11devicecontextpssetsamplers)
+- [D3D11\_BLEND\_DESC](#d3d11_blend_desc)
+- [D3D11\_RENDER\_TARGET\_BLEND\_DESC](#d3d11_render_target_blend_desc)
+- [ID3D11Device::CreateBlendState()](#id3d11devicecreateblendstate)
+- [ID3D11DeviceContext::OMSetBlendState()](#id3d11devicecontextomsetblendstate)
 
 # define WIN32_LEAN_AND_MEAN
 Windows.h 헤더 파일을 포함할 때 일부 추가 기능을 비활성화하여 컴파일 시간을 단축한다.
@@ -373,3 +384,53 @@ Device Context
 - Draw
 - OMSetRenderTargets
 - RSSetViewports
+
+# ID3D11ShaderResourceView
+셰이더 리소스 뷰에 대한 인터페이스다. 일반적으로 텍스처는 GPU 메모리에 저장되어 있으며 이를 셰이더에서 직접 읽을 수는 없다. 따라서 ID3D11ShaderResourceView를 사용하여 텍스처를 셰이더에 바인딩하고 이를 통해 셰이더에서 텍스처 데이터에 접근할 수 있다.
+
+# D3D11_SHADER_RESOURCE_VIEW_DESC
+셰이더 리소스 뷰를 생성하기 위한 구조체이다. 셰이더에서 사용할 수 있도록 특정 리소스에 대한 리소스 뷰를 설정하는 데 사용된다.
+
+# D3D11_SUBRESROUCE_DATA
+각 하위 리소스의 초기 데이터를 정의하는 데 사용하는 구조체다. 여기서 하위 리소스란 텍스처나 버퍼와 같은 리소스의 여러 세부 부분을 의미한다. 예를 들어, 2D 텍스처의 경우 MipMap 레벨 0은 원본 텍스처이다. MipMap 레벨 1은 원본 텍스처의 반으로 줄인 버전이고 MipMap 2는 또 반으로 줄인 버전이 된다. 이때, MipMap 레벨 0, 1, 2는 각각 하위 리소스가 된다.
+
+# ID3D11Device::CreateShaderResourceView()
+셰이더 리소스의 데이터에 접근하기 위한 셰이더 리소스 뷰를 생성한다.
+
+# ID3D11DeviceContext::PSSetShaderRewources()
+셰이더 리소스 배열을 픽셀 셰이더 스테이지로 바인딩한다. 
+
+# D3D11_SAMPLER_DESC
+샘플러 상태를 설정하는 구조체다. 셰이더에서 사용했던 형식과 동일하다.
+
+# ID3D11DeviceContext::PSSetSamplers()
+샘플러 배열을 픽셀 셰이더 스테이지에 바인딩한다.
+
+# D3D11_BLEND_DESC
+블렌드 상태를 생성하기 위한 구조체다.
+
+| 형식                           |          변수          |                         설명                          |
+| :----------------------------- | :--------------------: | :---------------------------------------------------: |
+| BOOL                           | AlphaToCoverageEnable  |  Alpha-To-Coverage 멀티 샘플링 기법을 사용할지 지정   |
+| BOOL                           | IndependentBlendEnable | 다중 렌더 타겟에 대해 독립적인 블렌딩을 사용할지 여부 |
+| D3D11_RENDER_TARGET_BLEND_DESC |    RenderTarget[8]     |   각 렌더 타겟에 대한 블렌딩 설정을 담고 있는 배열    |
+
+# D3D11_RENDER_TARGET_BLEND_DESC
+렌더 타겟의 블렌드 상태를 생성하기 위한 구조체다.
+
+| 형식           |         변수          |           설명            |
+| :------------- | :-------------------: | :-----------------------: |
+| BOOL           |      BlendEnable      |    블렌딩을 켜거나 끔     |
+| D3D11_BLEND    |       SrcBlend        | 픽셀 셰이더 출력의 RGB 값 |
+| D3D11_BLEND    |       DestBlend       |  렌더 타겟에 있는 RGB 값  |
+| D3D11_BLEND_OP |        BlendOp        | 위 두 값을 연산하는 방법  |
+| D3D11_Blend    |     SrcBlendALpha     | 픽셀 셰이더 출력의 알파값 |
+| D3D11_BLEND    |    DestBlendAlpha     |  렌더 타겟에 있는 알파값  |
+| D3D11_BLEND_OP |     BlendOpAlpha      | 위 두 값을 연산하는 방법  |
+| UINT8          | RenderTargetWriteMast |         마스크 값         |
+
+# ID3D11Device::CreateBlendState()
+Output-Merget 스테이지에 사용할 블렌딩 상태를 생성한다.
+
+# ID3D11DeviceContext::OMSetBlendState()
+Output-Merget 스테이지에 블렌딩 상태를 지정한다.
