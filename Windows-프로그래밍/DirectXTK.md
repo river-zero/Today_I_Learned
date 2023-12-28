@@ -41,8 +41,14 @@ C++에서 이름 충돌을 방지하고 정보 은닉을 위해 사용된다. �
 _DEBUG 매크로는 주로 디버그 빌드일 때 특정 코드 블록을 활성화하기 위해 사용한다. NDEBUG 매크로는 릴리스 빌드에서 특정 코드 블록을 비활성화하기 위해 사용한다.
 
 # D3D11CreateDevice()
+그래픽 디바이스를 생성하는 데 사용하는 함수다. 해당 함수를 호출하면 그래픽 애플리케이션을 개발할 수 있는 디바이스와 디바이스에 대한 컨텍스트가 만들어진다. 이를 통해 3D 그래픽 리소스를 생성하고 조작할 수 있게 된다.
+
 # ComPtr::As()
+as-a 관계를 의미한다. 호출한 인스턴스가 다형성 등의 성질로 변환될 수 있는지를 체크한다. 변환이 성공하면 S_OK를 반환하고 그렇지 않으면 에러 코드를 반환한다. 
+
 # IDXGIFactory5::CheckFeatureSupport()
+특정 기능이 현재 하드웨어에서 지원되는지 여부를 확인할 수 있다.
+
 # IDXGIFactory2::CreateSwapChainForHwnd()
 # IDXGFactory::MackWindowAssociation()
 # IDXGIFactory1::IsCurrent()
