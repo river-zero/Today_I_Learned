@@ -7,7 +7,7 @@
 - [ComPtr::As()](#comptras)
 - [IDXGIFactory5::CheckFeatureSupport()](#idxgifactory5checkfeaturesupport)
 - [IDXGIFactory2::CreateSwapChainForHwnd()](#idxgifactory2createswapchainforhwnd)
-- [IDXGFactory::MackWindowAssociation()](#idxgfactorymackwindowassociation)
+- [IDXGIFactory::MakeWindowAssociation()](#idxgifactorymakewindowassociation)
 - [IDXGIFactory1::IsCurrent()](#idxgifactory1iscurrent)
 - [IDXGIFactory6::EnumAdapterByGpuPreference()](#idxgifactory6enumadapterbygpupreference)
 - [IDXGIAdapter1::GetDesc1()](#idxgiadapter1getdesc1)
@@ -38,7 +38,9 @@ DirectXTK는 Microsoft가 개발한 DirectX 기반의 게임 및 그래픽 애�
 C++에서 이름 충돌을 방지하고 정보 은닉을 위해 사용된다. 각각의 소스 파일이 컴파일될 때 그 소스 파일 내에서만 유효한 이름 공간을 만들 수 있다.
 
 # _DEBUG & NDEBUG
-_DEBUG 매크로는 주로 디버그 빌드일 때 특정 코드 블록을 활성화하기 위해 사용한다. NDEBUG 매크로는 릴리스 빌드에서 특정 코드 블록을 비활성화하기 위해 사용한다.
+_DEBUG 매크로는 주로 디버그 빌드일 때 특정 코드 블록을 활성화하기 위해 사용한다. 
+
+NDEBUG 매크로는 표준 라이브러리의 assert 기능을 막아주는 역할을 하는데, 디버그 모드에서 예외가 발생할 경우 aseert 경고창을 표시하고 프로그램이 종료되는데 해당 매크로가 켜져 있다면 예외는 발생하지만 프로그램이 종료되지 않는다. 주로 배포용 릴리스 구성으로 빌드할 때 사용한다.
 
 # D3D11CreateDevice()
 그래픽 디바이스를 생성하는 데 사용하는 함수다. 해당 함수를 호출하면 그래픽 애플리케이션을 개발할 수 있는 디바이스와 디바이스에 대한 컨텍스트가 만들어진다. 이를 통해 3D 그래픽 리소스를 생성하고 조작할 수 있게 된다.
@@ -50,7 +52,11 @@ as-a 관계를 의미한다. 호출한 인스턴스가 다형성 등의 성질�
 특정 기능이 현재 하드웨어에서 지원되는지 여부를 확인할 수 있다.
 
 # IDXGIFactory2::CreateSwapChainForHwnd()
-# IDXGFactory::MackWindowAssociation()
+주로 윈도우 핸들을 기반으로 하는 윈도우에 대한 스왑 체인을 생성한다. 애플리케이션이 렌더링한 이미지를 화면에 표시하도록 한다.
+
+# IDXGIFactory::MakeWindowAssociation()
+보통 DXGI는 윈도우와 연관되면서 윈도우 이벤트와 그래픽 상태를 관리한다. 이 메서드는 이러한 연관성을 설정하거나 제거할 수 있도록 해준다.
+
 # IDXGIFactory1::IsCurrent()
 # IDXGIFactory6::EnumAdapterByGpuPreference()
 # IDXGIAdapter1::GetDesc1()
